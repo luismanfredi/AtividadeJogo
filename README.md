@@ -1,33 +1,20 @@
-# AtividadeJogo
+Passo a Passo:
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+1. `git clone https://github.com/luismanfredi/AtividadeJogo.git` (Esse use apenas na primeira vez)
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+2. `git pull` (Use sempre que começar a codar, pra ter certeza que ta tudo atualizado)
 
-## Platforms
+3. Crie um branch com: `git switch -c nomedabranch`
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+Para o nome da branch, use algo relacionado com oque voce vai fazer. Exemplo: `AdicionarTextura`.
 
-## Gradle
+4. Code, e vá adicionando novo código com: `git add arquivo`, e depois `git commit -m "mensagem do que voce fez"`.
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+No `git add` o nome do arquivo tem que ter o caminho exato, exemplo: `git add src/core/Core.java`. Se quiser conferir os arquivos que precisam ser commitados use `git status` <- muito útil. Não espera pra commitar tudo de uma vez, a cada nova funcionalidade pode fazer commit.
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+5. Depois: `git push -u origin nomedabranch`, entre no site do github no projeto e clique no botão que vai aparecer chamado "Compare & pull request". Abra o Pull request, Dai você mesmo aprova ou me chama pra ver se ta tudo certo. Depois clique em Merge
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+7. mude para a branch main com: `git switch main` e por último `git pull`.
+
+6. Por último tbm apague a branch com: `git branch -d nomedabranch` e `git push -d nomedabranch`.
+
