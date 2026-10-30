@@ -66,7 +66,7 @@ public class Core extends ApplicationAdapter {
         float worldHeight = viewport.getWorldHeight();
 
         spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight); // .draw(textura, posiçãox, posiçãoy, tamanhox, tamanhoy)
-        player.sprite.draw(spriteBatch); // sprites tem o proprio metodo draw
+        player.draw(spriteBatch); // sprites tem o proprio metodo draw
 
         spriteBatch.end();
     }
@@ -98,7 +98,7 @@ public class Core extends ApplicationAdapter {
         float worldHeight = viewport.getWorldHeight();
 
         float playerWidth = player.sprite.getWidth();
-        float playerheight = player.sprite.getHeight();
+        float playerHeight = player.sprite.getHeight();
 
         player.sprite.setX(MathUtils.clamp(player.sprite.getX(), 0, worldWidth - playerWidth)); // verifica se o player está no tamnho certo, se não fixa ele no maximo
     }
