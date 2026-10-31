@@ -4,51 +4,56 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
-public class Player {
-    public Sprite sprite;
+public class Player extends Sprite {
 
-    private float velocityX = 4f;
-    private float velocityY = 0f;
+    public Vector2 velocity = new Vector2(0f, 0f); // velocidade de moviemnto
+
+    private float speed = 4f;
     private float gravity = -20f;
+
+
     private float jumpStrengh = 8f;
 
     private boolean grounded = true;
 
-    public Player(Texture texture) {
-        sprite = new Sprite(texture);
-        sprite.setSize(1, 1);
+    public Player(Sprite sprite) {
+        super(sprite);
+        setSize(1, 1);
     }
 
     public void update(float delta) {
         if (!grounded) {
-            velocityY += gravity * delta;
-            sprite.translateY(velocityY * delta);
+            velocity.y += gravity * delta;
+        }
 
-            if (sprite.getY() <= 0) {
-                sprite.setY(0);
-                velocityY = 0;
-                grounded = true;
-            }
+        translateX(velocity.x * delta);
+        translateY(velocity.y * delta);
+
+        if (getY() <= 0) {
+            setY(0);
+            velocity.y = 0;
+            grounded = true;
         }
     }
 
     public void jump() {
         if (grounded) {
-            velocityY = jumpStrengh;
+            velocity.y = jumpStrengh;
             grounded = false;
         }
     }
 
-    public void moveRight(float delta) {
-        sprite.translateX(velocityX * delta);
+    public void moveRight() {
+        velocity.x = speed;
     }
 
-    public void moveLeft(float delta) {
-        sprite.translateX(-velocityX * delta);
+    public void moveLeft() {
+        velocity.x = -speed;
     }
 
     public void draw(SpriteBatch batch) {
-        sprite.draw(batch);
+        super.draw(batch);
     }
 }

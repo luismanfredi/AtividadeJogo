@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -18,7 +19,8 @@ import io.github.luismanfredi.atividadejogo.Player;
 public class PlayScreen implements Screen {
 
     private final Core game;
-    public Player player;
+    private Player player;
+
     private Texture playerTexture;
     public FitViewport viewport;
     private TiledMap map;
@@ -37,6 +39,8 @@ public class PlayScreen implements Screen {
         input(delta); // input de comandos, delta é o tempo desde o ultimo frame
         logic(delta); // por enquanto não permite que o personagem saia da tela
 
+        player.update(delta);
+
         ScreenUtils.clear(Color.BLACK); // limpa a tela
 
         camera.update(); // recalcula a projeção da camera, sempre usar depois de mexer com a camera
@@ -53,14 +57,14 @@ public class PlayScreen implements Screen {
     }
 
     private void input(float delta) {
-        player.update(delta);
+        player.velocity.x = 0;
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.moveRight(delta); // quanto o sprite mexe por segundo
+            player.moveRight(); // quanto o sprite mexe por segundo
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            player.moveLeft(delta);
+            player.moveLeft();
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -73,8 +77,8 @@ public class PlayScreen implements Screen {
     }
 
     private void logic(float delta) {
-        float playerWidth = player.sprite.getWidth();
-        player.sprite.setX(MathUtils.clamp(player.sprite.getX(), 0, MAP_WIDTH - playerWidth)); // verifica se o player está no tamnho certo, se não fixa ele no maximo
+        float playerWidth = player.getWidth();
+        player.setX(MathUtils.clamp(player.getX(), 0, MAP_WIDTH - playerWidth)); // verifica se o player está no tamnho certo, se não fixa ele no maximo
     }
 
     @Override
@@ -96,7 +100,7 @@ public class PlayScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map, scale); // renderer do mapa
 
         playerTexture = new Texture(Gdx.files.internal("player.png")); // textura do personagem
-        player = new Player(playerTexture); // cria um Player com a textura do personagem
+        player = new Player(new Sprite(playerTexture)); // cria um Player com a textura do personagem
     }
 
     @Override
