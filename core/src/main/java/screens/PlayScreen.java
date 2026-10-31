@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -88,11 +89,11 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
-        float scale = 1f / 32f;
+        float scale = 1f / 32f; // escala do tela
 
         camera = new OrthographicCamera();
 
-        // a altura ta fixada MAP_HEIGHT, ja a largura
+        // a altura e largura fixas
         viewport = new FitViewport(MAP_WIDTH, MAP_HEIGHT, camera);
 
         TmxMapLoader loader = new TmxMapLoader(); // objeto para carregar mapa .tmx
@@ -100,7 +101,8 @@ public class PlayScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map, scale); // renderer do mapa
 
         playerTexture = new Texture(Gdx.files.internal("player.png")); // textura do personagem
-        player = new Player(new Sprite(playerTexture)); // cria um Player com a textura do personagem
+        player = new Player(new Sprite(playerTexture), (TiledMapTileLayer) map.getLayers().get(0)); // cria um Player com a textura do personagem
+        player.setPosition(9f, 4f);
     }
 
     @Override

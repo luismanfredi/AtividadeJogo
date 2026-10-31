@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import screens.PlayScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+
+// Core herda atributos e metodos de Game
 public class Core extends Game {
     public SpriteBatch spriteBatch;
 
