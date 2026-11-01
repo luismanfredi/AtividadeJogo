@@ -15,7 +15,7 @@ public class Player extends Sprite {
     private float speed = 4f; // velocidade horizontal
     private float gravity = -20f; // gravidade...
     private float jumpStrength = 8f; // força do pulo, velocidade inicial dele
-    private boolean grounded = true; // variavel de estado, confere se o personagem está no chão. Impede pulo infinito por exemplo. true = está no chão, e vice versa
+    private boolean grounded = false; // variavel de estado, confere se o personagem está no chão. Impede pulo infinito por exemplo. true = está no chão, e vice versa
 
     private TiledMapTileLayer collisionLayer; // variavel com a camada de colissão do Tiled, explico mais no readme
 
@@ -30,6 +30,10 @@ public class Player extends Sprite {
     // esse metodo atualiza o personagem, ele é chamado a cada frame
     public void update(float delta) {
         // esse delta que ele recebe é basicamente o tempo desde o último frame
+
+        if (!isCellBlocked(getX() + 0.1f, getY() - 0.01f)  || !isCellBlocked(getX() + getWidth() - 0.01f, getY() - 0.01f)) {
+            grounded = false;
+        }
 
         // traduzindo o if:
         // se o personagem não está no chão:
@@ -98,7 +102,6 @@ public class Player extends Sprite {
     // metodo que verifica se um quadrado está bloqueado, devolve true se sim e false se não
     // recebe tbm x, e y que são as posições do quadrado
     private boolean isCellBlocked(float x, float y) {
-
         // se não tiver um quadrado de colisão então não tem colisão, returna false
         if (collisionLayer == null) return false;
 
