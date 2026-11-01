@@ -104,8 +104,8 @@ public class Player extends Sprite {
 
         // x e y vem em float, então aqui só tem uma conversão para ambas de float -> int
         // por que converter? o tiled precisa de inteiros, só olhar lá que cada quadrado tem uma posição tipo (2, 5)
-        int tileX = (int) x;
-        int tileY = (int) y;
+        int tileX = (int) Math.floor(x);
+        int tileY = (int) Math.floor(y);
 
         // verifica se está dentro do mapa... mais no readme
         if (tileX < 0 || tileX >= collisionLayer.getWidth() || tileY < 0 || tileY >= collisionLayer.getHeight()) {
