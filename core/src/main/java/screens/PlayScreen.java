@@ -14,6 +14,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import io.github.luismanfredi.atividadejogo.Core;
 import io.github.luismanfredi.atividadejogo.Player;
 
@@ -23,12 +24,12 @@ public class PlayScreen implements Screen {
     private Player player;
 
     private Texture playerTexture;
-    public FitViewport viewport;
+    public StretchViewport viewport;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
 
-    private final float MAP_WIDTH = 30f;
+    private final float MAP_WIDTH = 80f;
     private final float MAP_HEIGHT = 20f;
 
     public PlayScreen(Core game) {
@@ -42,9 +43,15 @@ public class PlayScreen implements Screen {
 
         player.update(delta);
 
+        float cameraHalfWidth = viewport.getWorldWidth() / 2f;
+
+        float targetX = MathUtils.clamp(player.getX() + player.getWidth() / 2f, cameraHalfWidth, MAP_WIDTH - cameraHalfWidth);
+
+        camera.position.set(targetX, MAP_HEIGHT / 2f, 0f);
+        camera.update();
+
         ScreenUtils.clear(Color.BLACK);
 
-        camera.update();
         renderer.setView(camera);
         renderer.render();
 
@@ -80,6 +87,10 @@ public class PlayScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        float aspectRadio = (float) width / (float) height;
+        float currentWorldWidth = MAP_HEIGHT * aspectRadio;
+
+        viewport.setWorldSize(currentWorldWidth, MAP_HEIGHT);
         viewport.update(width, height, true);
     }
 
@@ -88,7 +99,9 @@ public class PlayScreen implements Screen {
         float scale = 1f / 32f;
 
         camera = new OrthographicCamera();
-        viewport = new FitViewport(MAP_WIDTH, MAP_HEIGHT, camera);
+
+        float aspectRatio = (float) Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
+        viewport = new StretchViewport(MAP_WIDTH * aspectRatio, MAP_HEIGHT, camera);
 
         TmxMapLoader loader = new TmxMapLoader();
         map = loader.load("mapa/MAPA.tmx");
