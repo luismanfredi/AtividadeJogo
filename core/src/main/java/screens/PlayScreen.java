@@ -32,27 +32,27 @@ public class PlayScreen implements Screen {
     private final float MAP_HEIGHT = 20f;
 
     public PlayScreen(Core game) {
-        this.game = game; // construtor para passar o Core
+        this.game = game;
     }
 
     @Override
     public void render(float delta) {
-        input(delta); // input de comandos, delta é o tempo desde o ultimo frame
-        logic(delta); // por enquanto não permite que o personagem saia da tela
+        input(delta);
+        logic(delta);
 
         player.update(delta);
 
-        ScreenUtils.clear(Color.BLACK); // limpa a tela
+        ScreenUtils.clear(Color.BLACK);
 
-        camera.update(); // recalcula a projeção da camera, sempre usar depois de mexer com a camera
+        camera.update();
         renderer.setView(camera);
-        renderer.render(); // renderiza o mapa
+        renderer.render();
 
-        game.spriteBatch.setProjectionMatrix(camera.combined); // como o viewport é aplicado ao spritebatch, para imagens aparecem no lugar certo
+        game.spriteBatch.setProjectionMatrix(camera.combined);
 
-        game.spriteBatch.begin(); // todas chamadas de draw deve estar entre .begin() e .end()
+        game.spriteBatch.begin();
 
-        player.draw(game.spriteBatch); // desenha o player na tela
+        player.draw(game.spriteBatch);
 
         game.spriteBatch.end();
     }
@@ -61,7 +61,7 @@ public class PlayScreen implements Screen {
         player.velocity.x = 0;
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.moveRight(); // quanto o sprite mexe por segundo
+            player.moveRight();
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -71,15 +71,11 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             player.jump();
         }
-
-        if (Gdx.input.isTouched()) {
-            // se clicou
-        }
     }
 
     private void logic(float delta) {
         float playerWidth = player.getWidth();
-        player.setX(MathUtils.clamp(player.getX(), 0, MAP_WIDTH - playerWidth)); // verifica se o player está no tamnho certo, se não fixa ele no maximo
+        player.setX(MathUtils.clamp(player.getX(), 0, MAP_WIDTH - playerWidth));
     }
 
     @Override
@@ -89,19 +85,17 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
-        float scale = 1f / 32f; // escala do tela
+        float scale = 1f / 32f;
 
         camera = new OrthographicCamera();
-
-        // a altura e largura fixas
         viewport = new FitViewport(MAP_WIDTH, MAP_HEIGHT, camera);
 
-        TmxMapLoader loader = new TmxMapLoader(); // objeto para carregar mapa .tmx
-        map = loader.load("mapa/MAPA.tmx"); // carrega o mapa
-        renderer = new OrthogonalTiledMapRenderer(map, scale); // renderer do mapa
+        TmxMapLoader loader = new TmxMapLoader();
+        map = loader.load("mapa/MAPA.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map, scale);
 
-        playerTexture = new Texture(Gdx.files.internal("player.png")); // textura do personagem
-        player = new Player(new Sprite(playerTexture), (TiledMapTileLayer) map.getLayers().get(0)); // cria um Player com a textura do personagem
+        playerTexture = new Texture(Gdx.files.internal("player.png"));
+        player = new Player(new Sprite(playerTexture), (TiledMapTileLayer) map.getLayers().get(0));
         player.setPosition(9f, 4f);
     }
 
