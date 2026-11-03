@@ -31,6 +31,10 @@ public class Player extends Sprite {
     public void update(float delta) {
         // esse delta que ele recebe é basicamente o tempo desde o último frame
 
+        if (!grounded) {
+            velocity.y += gravity * delta;
+        }
+
         if (!isCellBlocked(getX() + 0.1f, getY() - 0.01f)  || !isCellBlocked(getX() + getWidth() - 0.01f, getY() - 0.01f)) {
             grounded = false;
         }
@@ -40,61 +44,61 @@ public class Player extends Sprite {
         // gravidade é aplicada no pulo
         // se não entendeu oque é "!grounded" ele só reverte/nega o boolean, se chega false, vira true, e chega true vira false
         // e esse if só vai ser executado se for true, então grounded precisa ser false, melhor pesquisar que essa explicação ficou pessima...
-        if (!grounded) {
-            velocity.y += gravity * delta;
-        }
 
         // posições do personagens salvas, porque?
         // para caso ele colida com algo, a gente volte a posição antiga
         float oldX = getX();
-        float oldY = getY();
+        translateX(velocity.x * delta);
+
+        if (velocity.x > 0) {
+            if (isCellBlocked(getX() + getWidth(), getY()) || isCellBlocked(getX() + getWidth(), getY() + getHeight() - 0.01f)) {
+                setX(oldX); // posição antiga que ele volta, para isso que serve o setX(posiçãoantiga)
+                velocity.x = 0; // velocidade 0 ja que enconstou em parede
+            }
+        } else if (velocity.x < 0) {
+            if (isCellBlocked(getX() , getY()) || isCellBlocked(getX(), getY() + getHeight() - 0.01f)) {
+                setX(oldX); // posição antiga que ele volta, para isso que serve o setX(posiçãoantiga)
+                velocity.x = 0;
+            }
+        }
+
 
         // Colisão está abaixo, vou explicar melhor no readme, então leia lá por favor...
 
         // essa linha movimenta o personagem para o lado, depende dos métodos moveRight() e moveLeft(), olhe abaixo para entender melhor...
-        translateX(velocity.x * delta);
 
         // vou explicar a colisão no readme certinho, por enquanto entenda isso:
         // cada afirmação aqui verifica se alguma bloco em volta do personagem está bloqueado
         // se sim (SE ALGUMA DER TRUE) quer dizer que tem um bloco bloqueado, logo o persoangem volta para a posição antiga
-        if (isCellBlocked(getX() , getY()) || isCellBlocked(getX() + getWidth() - 0.01f, getY())
-            || isCellBlocked(getX() + getWidth(), getY()) || isCellBlocked(getX() + getWidth(), getY() + getHeight() - 0.01f)) {
-            setX(oldX); // posição antiga que ele volta, para isso que serve o setX(posiçãoantiga)
-            velocity.x = 0; // velocidade 0 ja que enconstou em parede
-        }
 
         // essa linha movimenta o personagem para o cima
+
+        float oldY = getY();
         translateY(velocity.y * delta);
 
         // variavel para conferir se colidiu no eixo Y
-        boolean collidedY = false;
+        grounded = false;
 
         // se a velocidadeY é menor que 0 está caindo
         if (velocity.y < 0) {
             // segue mesma ideia do eixo X, olhe o readme...
             if (isCellBlocked(getX() + 0.1f, getY()) || isCellBlocked(getX() + getWidth() - 0.1f, getY())) {
-                collidedY = true; // se colidiu aqui
+                setY((float) Math.floor(getY() + 1f));
+                velocity.y = 0;
                 grounded = true; // foi com o chão
             }
         } else if (velocity.y > 0) { // pulando, por isso sem grounded = true e verificações diferentes
             if (isCellBlocked(getX() + 0.1f, getY() + getHeight()) || isCellBlocked(getX() + getWidth() - 0.1f, getY() + getHeight())) {
-                collidedY = true;
+                setY(oldY);
+                velocity.y = 0;
             }
         }
 
-
-        // se collideY for verdadeiro o if é executado
-        if (collidedY) {
-            setY(oldY); // volta para posição antiga
-            velocity.y = 0; // se colidiu tem que estar parado
-        } else {
-
-            // aqui tenho que ajeitar porque ele ainda não cai. Só cai se pular
-            if (getY() <= 0) {
-                setY(0);
-                velocity.y = 0;
-                grounded = true;
-            }
+        // aqui tenho que ajeitar porque ele ainda não cai. Só cai se pular
+        if (getY() <= 0) {
+            setY(0);
+            velocity.y = 0;
+            grounded = true;
         }
     }
 
