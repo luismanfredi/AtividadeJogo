@@ -14,10 +14,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import io.github.luismanfredi.atividadejogo.Bullet;
-import io.github.luismanfredi.atividadejogo.Core;
-import io.github.luismanfredi.atividadejogo.Direction;
-import io.github.luismanfredi.atividadejogo.Player;
+import io.github.luismanfredi.atividadejogo.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,9 +23,11 @@ public class PlayScreen implements Screen {
 
     private final Core game;
     private Player player;
+    private Enemy enemy;
     private ArrayList<Bullet> bullets = new ArrayList<>();
 
     private Texture playerTexture;
+    private Texture enemyTexture;
     private Texture bulletTexture;
     public StretchViewport viewport;
     private TiledMap map;
@@ -48,6 +47,7 @@ public class PlayScreen implements Screen {
         logic(delta);
 
         player.update(delta);
+        enemy.update(delta, player.getX(), player.getY());
 
         Iterator<Bullet> iterator = bullets.iterator();
         while (iterator.hasNext()) {
@@ -77,6 +77,8 @@ public class PlayScreen implements Screen {
         game.spriteBatch.begin();
 
         player.draw(game.spriteBatch);
+
+        enemy.draw(game.spriteBatch);
 
         for (Bullet b : bullets) {
             b.draw(game.spriteBatch);
@@ -141,6 +143,10 @@ public class PlayScreen implements Screen {
         playerTexture = new Texture(Gdx.files.internal("player.png"));
         player = new Player(new Sprite(playerTexture), (TiledMapTileLayer) map.getLayers().get(0));
         player.setPosition(9f, 4f);
+
+        enemyTexture = new Texture((Gdx.files.internal("inimigo.png")));
+        enemy = new Enemy(new Sprite(enemyTexture), (TiledMapTileLayer) map.getLayers().get(0));
+        enemy.setPosition(9f, 4f);
 
         bulletTexture = new Texture((Gdx.files.internal("bala.png")));
     }
