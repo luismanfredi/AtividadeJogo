@@ -12,7 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import io.github.luismanfredi.atividadejogo.*;
@@ -48,9 +48,22 @@ public class PlayScreen implements Screen {
         logic(delta);
 
         player.update(delta);
+        if (player.dead) {
+            Gdx.app.exit();
+        }
 
         for (Enemy enemy : enemies) {
             enemy.update(delta, player.getX(), player.getY());
+
+            if (player.box.overlaps(enemy.box) && !player.isInvulnerable) {
+                player.takeDamage();
+
+                Vector2 direction = new Vector2(player.getX() - enemy.getX(), player.getY() - enemy.getY());
+                direction.nor();
+
+                float knockbackStrength = 20f;
+                player.knockbackVelocity.set(direction.x * knockbackStrength, direction.y * knockbackStrength);
+            }
         }
 
         Iterator<Bullet> iterator = bullets.iterator();
@@ -96,14 +109,16 @@ public class PlayScreen implements Screen {
     private void input(float delta) {
         player.velocity.x = 0;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.moveRight();
-            player.direction = Direction.RIGHT;
-        }
+        if (player.knockbackVelocity.len() < 5f) {
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                player.moveRight();
+                player.direction = Direction.RIGHT;
+            }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            player.moveLeft();
-            player.direction = Direction.LEFT;
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                player.moveLeft();
+                player.direction = Direction.LEFT;
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {

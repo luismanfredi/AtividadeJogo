@@ -3,6 +3,7 @@ package io.github.luismanfredi.atividadejogo;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -11,10 +12,20 @@ public class Player extends Sprite {
     public Direction direction = Direction.RIGHT;
     public Rectangle box = new Rectangle();
 
+    public float max_health = 100f;
+    public float health;
     private float speed = 7f;
     private float gravity = -20f;
     private float jumpStrength = 8f;
     private boolean grounded = false;
+    public boolean dead = false;
+
+    public Vector2 knockbackVelocity = new Vector2(0f, 0f);
+    private final float KNOCKBACK_DECAY = 5f;
+
+    public boolean isInvulnerable = false;
+    public float invulnerabilityTimer = 0f;
+    private final float INVULNERABILITY_DURATION = 1.0f;
 
     private TiledMapTileLayer collisionLayer;
 
@@ -23,9 +34,34 @@ public class Player extends Sprite {
         this.collisionLayer = collisionLayer;
         setSize(1f, 1f);
         box.setSize(1f, 1f);
+        this.health = this.max_health;
     }
 
     public void update(float delta) {
+        if (isInvulnerable) {
+            invulnerabilityTimer -= delta;
+            if ((int)(invulnerabilityTimer * 15) % 2 == 0) {
+                setColor(1, 1, 1, 0.3f); // Desenha com 30% de opacidade (transparente)
+            } else {
+                setColor(1, 1, 1, 1f);
+            }
+
+            if (invulnerabilityTimer <= 0) {
+                isInvulnerable = false;
+                setColor(1, 1, 1, 1f);
+            }
+        }
+
+        translateX(knockbackVelocity.x * delta);
+        translateY(knockbackVelocity.y * delta);
+
+        knockbackVelocity.x = MathUtils.lerp(knockbackVelocity.x, 0, KNOCKBACK_DECAY * delta);
+        knockbackVelocity.y = MathUtils.lerp(knockbackVelocity.y, 0, KNOCKBACK_DECAY * delta);
+
+        if (health <= 0) {
+            dead = true;
+        }
+
         if (!grounded) {
             velocity.y += gravity * delta;
         }
@@ -88,6 +124,17 @@ public class Player extends Sprite {
         TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
 
         return cell != null && cell.getTile() != null;
+    }
+
+    public void takeDamage() {
+        if (!isInvulnerable) {
+            health -= 20;
+
+            isInvulnerable = true;
+            invulnerabilityTimer = INVULNERABILITY_DURATION;
+
+
+        }
     }
 
     public void jump() {
