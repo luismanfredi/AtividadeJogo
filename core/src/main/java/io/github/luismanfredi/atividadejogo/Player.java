@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Player extends Sprite {
     public Vector2 velocity = new Vector2(0f, 0f);
+    public Direction direction = Direction.RIGHT;
 
     private float speed = 4f;
     private float gravity = -20f;
