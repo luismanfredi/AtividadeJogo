@@ -30,10 +30,13 @@ public class PlayScreen implements Screen {
     private Texture playerTexture;
     private Texture enemyTexture;
     private Texture bulletTexture;
+    private Texture barBGTexture;
+    private Texture barHealthTexture;
     public StretchViewport viewport;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
+    private HealthBar healthBar;
 
     private final float MAP_WIDTH = 80f;
     private final float MAP_HEIGHT = 20f;
@@ -51,6 +54,8 @@ public class PlayScreen implements Screen {
         if (player.isDead) {
             Gdx.app.exit();
         }
+
+        healthBar.update(delta, camera, player.health);
 
         Iterator<Bullet> bulletIterator = bullets.iterator();
         while (bulletIterator.hasNext()) {
@@ -120,6 +125,9 @@ public class PlayScreen implements Screen {
         for (Bullet b : bullets) {
             b.draw(game.spriteBatch);
         }
+
+        healthBar.draw(game.spriteBatch);
+        healthBar.hBar.draw(game.spriteBatch);
 
         game.spriteBatch.end();
     }
@@ -194,6 +202,12 @@ public class PlayScreen implements Screen {
         enemyTexture = new Texture((Gdx.files.internal("inimigo.png")));
 
         bulletTexture = new Texture((Gdx.files.internal("bala.png")));
+
+        barBGTexture = new Texture(Gdx.files.internal("barra_fundo.png"));
+        barHealthTexture = new Texture(Gdx.files.internal("barra_vida.png"));
+
+        healthBar = new HealthBar(new Sprite(barBGTexture), new Sprite(barHealthTexture));
+
     }
 
     @Override
