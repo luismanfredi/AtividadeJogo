@@ -55,8 +55,6 @@ public class Player extends Sprite {
         translateX(knockbackVelocity.x * delta);
         translateY(knockbackVelocity.y * delta);
 
-        knockbackVelocity.x = MathUtils.lerp(knockbackVelocity.x, 0, KNOCKBACK_DECAY * delta);
-        knockbackVelocity.y = MathUtils.lerp(knockbackVelocity.y, 0, KNOCKBACK_DECAY * delta);
 
         if (health <= 0) {
             isDead = true;
@@ -70,37 +68,46 @@ public class Player extends Sprite {
             grounded = false;
         }
 
+        float totalVelX = velocity.x + knockbackVelocity.x;
         float oldX = getX();
-        translateX(velocity.x * delta);
+        translateX(totalVelX * delta);
 
-        if (velocity.x > 0) {
+        if (totalVelX > 0) {
             if (isCellBlocked(getX() + getWidth(), getY()) || isCellBlocked(getX() + getWidth(), getY() + getHeight() - 0.01f)) {
                 setX(oldX);
                 velocity.x = 0;
+                knockbackVelocity.x = 0;
             }
-        } else if (velocity.x < 0) {
+        } else if (totalVelX < 0) {
             if (isCellBlocked(getX() , getY()) || isCellBlocked(getX(), getY() + getHeight() - 0.01f)) {
                 setX(oldX);
                 velocity.x = 0;
+                knockbackVelocity.x = 0;
             }
         }
 
+        float totalVelY = velocity.y + knockbackVelocity.y;
         float oldY = getY();
         translateY(velocity.y * delta);
         grounded = false;
 
-        if (velocity.y < 0) {
+        if (totalVelY < 0) {
             if (isCellBlocked(getX() + 0.1f, getY()) || isCellBlocked(getX() + getWidth() - 0.1f, getY())) {
                 setY((float) Math.floor(getY() + 1f));
                 velocity.y = 0;
+                knockbackVelocity.y = 0;
                 grounded = true;
             }
-        } else if (velocity.y > 0) {
+        } else if (totalVelY > 0) {
             if (isCellBlocked(getX() + 0.1f, getY() + getHeight()) || isCellBlocked(getX() + getWidth() - 0.1f, getY() + getHeight())) {
                 setY(oldY);
                 velocity.y = 0;
+                knockbackVelocity.y = 0;
             }
         }
+
+        knockbackVelocity.x = MathUtils.lerp(knockbackVelocity.x, 0, KNOCKBACK_DECAY * delta);
+        knockbackVelocity.y = MathUtils.lerp(knockbackVelocity.y, 0, KNOCKBACK_DECAY * delta);
 
         if (getY() <= 0) {
             setY(0);
