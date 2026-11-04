@@ -51,10 +51,6 @@ public class PlayScreen implements Screen {
 
         for (Enemy enemy : enemies) {
             enemy.update(delta, player.getX(), player.getY());
-
-            if (player.box.overlaps(enemy.box)) {
-                enemies.remove(enemy);
-            }
         }
 
         Iterator<Bullet> iterator = bullets.iterator();
