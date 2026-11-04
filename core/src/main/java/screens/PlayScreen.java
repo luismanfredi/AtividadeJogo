@@ -13,17 +13,23 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import io.github.luismanfredi.atividadejogo.Bullet;
 import io.github.luismanfredi.atividadejogo.Core;
+import io.github.luismanfredi.atividadejogo.Direction;
 import io.github.luismanfredi.atividadejogo.Player;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class PlayScreen implements Screen {
 
     private final Core game;
     private Player player;
+    private ArrayList<Bullet> bullets = new ArrayList<>();
 
     private Texture playerTexture;
+    private Texture bulletTexture;
     public StretchViewport viewport;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
@@ -43,6 +49,17 @@ public class PlayScreen implements Screen {
 
         player.update(delta);
 
+        Iterator<Bullet> iterator = bullets.iterator();
+        while (iterator.hasNext()) {
+            Bullet b = iterator.next();
+            b.update(delta);
+
+            if (b.isDead() || b.getX() > MAP_WIDTH || b.getX() < 0) {
+                iterator.remove();
+            }
+        }
+
+
         float cameraHalfWidth = viewport.getWorldWidth() / 2f;
 
         float targetX = MathUtils.clamp(player.getX() + player.getWidth() / 2f, cameraHalfWidth, MAP_WIDTH - cameraHalfWidth);
@@ -61,6 +78,10 @@ public class PlayScreen implements Screen {
 
         player.draw(game.spriteBatch);
 
+        for (Bullet b : bullets) {
+            b.draw(game.spriteBatch);
+        }
+
         game.spriteBatch.end();
     }
 
@@ -69,14 +90,24 @@ public class PlayScreen implements Screen {
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             player.moveRight();
+            player.direction = Direction.RIGHT;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             player.moveLeft();
+            player.direction = Direction.LEFT;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             player.jump();
+        }
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            Bullet newBullet = new Bullet(new Sprite(bulletTexture), player.direction, (TiledMapTileLayer) map.getLayers().get(0));
+
+            newBullet.spawn(player.getX(), player.getY(), player.direction);
+
+            bullets.add(newBullet);
         }
     }
 
@@ -110,6 +141,8 @@ public class PlayScreen implements Screen {
         playerTexture = new Texture(Gdx.files.internal("player.png"));
         player = new Player(new Sprite(playerTexture), (TiledMapTileLayer) map.getLayers().get(0));
         player.setPosition(9f, 4f);
+
+        bulletTexture = new Texture((Gdx.files.internal("bala.png")));
     }
 
     @Override
@@ -132,5 +165,6 @@ public class PlayScreen implements Screen {
         map.dispose();
         renderer.dispose();
         playerTexture.dispose();
+        bulletTexture.dispose();
     }
 }
