@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import io.github.luismanfredi.atividadejogo.*;
@@ -23,7 +24,7 @@ public class PlayScreen implements Screen {
 
     private final Core game;
     private Player player;
-    private Enemy enemy;
+    private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Bullet> bullets = new ArrayList<>();
 
     private Texture playerTexture;
@@ -47,7 +48,14 @@ public class PlayScreen implements Screen {
         logic(delta);
 
         player.update(delta);
-        enemy.update(delta, player.getX(), player.getY());
+
+        for (Enemy enemy : enemies) {
+            enemy.update(delta, player.getX(), player.getY());
+
+            if (player.box.overlaps(enemy.box)) {
+                enemies.remove(enemy);
+            }
+        }
 
         Iterator<Bullet> iterator = bullets.iterator();
         while (iterator.hasNext()) {
@@ -78,7 +86,9 @@ public class PlayScreen implements Screen {
 
         player.draw(game.spriteBatch);
 
-        enemy.draw(game.spriteBatch);
+        for (Enemy enemy : enemies) {
+            enemy.draw(game.spriteBatch);
+        }
 
         for (Bullet b : bullets) {
             b.draw(game.spriteBatch);
@@ -110,6 +120,14 @@ public class PlayScreen implements Screen {
             newBullet.spawn(player.getX(), player.getY(), player.direction);
 
             bullets.add(newBullet);
+        }
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
+            Enemy newEnemy = new Enemy(new Sprite(enemyTexture), (TiledMapTileLayer) map.getLayers().get(0));
+
+            newEnemy.setPosition(9f, 4f);
+
+            enemies.add(newEnemy);
         }
     }
 
@@ -145,8 +163,6 @@ public class PlayScreen implements Screen {
         player.setPosition(9f, 4f);
 
         enemyTexture = new Texture((Gdx.files.internal("inimigo.png")));
-        enemy = new Enemy(new Sprite(enemyTexture), (TiledMapTileLayer) map.getLayers().get(0));
-        enemy.setPosition(9f, 4f);
 
         bulletTexture = new Texture((Gdx.files.internal("bala.png")));
     }

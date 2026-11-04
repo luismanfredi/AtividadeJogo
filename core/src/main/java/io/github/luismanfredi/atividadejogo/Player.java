@@ -3,11 +3,13 @@ package io.github.luismanfredi.atividadejogo;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Player extends Sprite {
     public Vector2 velocity = new Vector2(0f, 0f);
     public Direction direction = Direction.RIGHT;
+    public Rectangle box = new Rectangle();
 
     private float speed = 7f;
     private float gravity = -20f;
@@ -20,6 +22,7 @@ public class Player extends Sprite {
         super(sprite);
         this.collisionLayer = collisionLayer;
         setSize(1f, 1f);
+        box.setSize(1f, 1f);
     }
 
     public void update(float delta) {
@@ -68,6 +71,8 @@ public class Player extends Sprite {
             velocity.y = 0;
             grounded = true;
         }
+
+        box.setPosition(getX(), getY());
     }
 
     private boolean isCellBlocked(float x, float y) {
