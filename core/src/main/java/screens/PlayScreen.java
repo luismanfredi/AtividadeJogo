@@ -48,12 +48,41 @@ public class PlayScreen implements Screen {
         logic(delta);
 
         player.update(delta);
-        if (player.dead) {
+        if (player.isDead) {
             Gdx.app.exit();
         }
 
-        for (Enemy enemy : enemies) {
+        Iterator<Bullet> bulletIterator = bullets.iterator();
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
+            bullet.update(delta);
+
+            if (bullet.isDead() || bullet.getX() > MAP_WIDTH || bullet.getX() < 0) {
+                bulletIterator.remove();
+            }
+        }
+
+        Iterator<Enemy> iterator = enemies.iterator();
+        while (iterator.hasNext()) {
+            Enemy enemy = iterator.next();
+
+            Iterator<Bullet> bulletIterator2 = bullets.iterator();
+            while (bulletIterator2.hasNext()) {
+                Bullet bullet = bulletIterator2.next();
+
+                if (bullet.box.overlaps(enemy.box)) {
+                    enemy.takeDamage();
+                    bulletIterator2.remove();
+                    break;
+                }
+            }
+
             enemy.update(delta, player.getX(), player.getY());
+
+            if (enemy.isDead) {
+                iterator.remove();
+                continue;
+            }
 
             if (player.box.overlaps(enemy.box) && !player.isInvulnerable) {
                 player.takeDamage();
@@ -65,17 +94,6 @@ public class PlayScreen implements Screen {
                 player.knockbackVelocity.set(direction.x * knockbackStrength, direction.y * knockbackStrength);
             }
         }
-
-        Iterator<Bullet> iterator = bullets.iterator();
-        while (iterator.hasNext()) {
-            Bullet b = iterator.next();
-            b.update(delta);
-
-            if (b.isDead() || b.getX() > MAP_WIDTH || b.getX() < 0) {
-                iterator.remove();
-            }
-        }
-
 
         float cameraHalfWidth = viewport.getWorldWidth() / 2f;
 

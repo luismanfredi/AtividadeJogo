@@ -9,11 +9,12 @@ public class Enemy extends Sprite {
     public Vector2 velocity = new Vector2(0f, 0f);
     public Rectangle box = new Rectangle();
 
-
+    private float health = 30f;
     private float speed = 3f;
     private float gravity = -20f;
     private float jumpStrength = 8f;
     boolean grounded = false;
+    public boolean isDead = false;
 
     private TiledMapTileLayer collisionLayer;
 
@@ -25,6 +26,10 @@ public class Enemy extends Sprite {
     }
 
     public void update(float delta, float x, float y) {
+        if (health <= 0) {
+            isDead = true;
+        }
+
         if (!grounded) {
             velocity.y += gravity * delta;
         }
@@ -95,6 +100,10 @@ public class Enemy extends Sprite {
         TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
 
         return cell != null && cell.getTile() != null;
+    }
+
+    public void takeDamage() {
+        health -= 15f;
     }
 
     public void jump() {

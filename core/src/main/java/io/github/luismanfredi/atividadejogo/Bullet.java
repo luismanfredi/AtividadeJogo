@@ -2,6 +2,7 @@ package io.github.luismanfredi.atividadejogo;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ public class Bullet extends Sprite {
     Direction direction;
     private boolean dead = false;
 
+    public Rectangle box = new Rectangle();
+
     private TiledMapTileLayer collisionLayer;
 
     public Bullet(Sprite sprite, Direction direction, TiledMapTileLayer collisionLayer) {
@@ -19,6 +22,7 @@ public class Bullet extends Sprite {
         this.direction = direction;
         this.collisionLayer = collisionLayer;
         setSize(0.3f, 0.2f);
+        box.setSize(0.3f, 0.2f);
     }
 
     public void update(float delta) {
@@ -37,6 +41,8 @@ public class Bullet extends Sprite {
                 dead = true;
             }
         }
+
+        box.setPosition(getX(), getY());
     }
 
     public void spawn(float x, float y, Direction playerDirection) {

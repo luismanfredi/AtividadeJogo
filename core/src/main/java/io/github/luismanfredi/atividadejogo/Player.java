@@ -18,7 +18,7 @@ public class Player extends Sprite {
     private float gravity = -20f;
     private float jumpStrength = 8f;
     private boolean grounded = false;
-    public boolean dead = false;
+    public boolean isDead = false;
 
     public Vector2 knockbackVelocity = new Vector2(0f, 0f);
     private final float KNOCKBACK_DECAY = 5f;
@@ -59,7 +59,7 @@ public class Player extends Sprite {
         knockbackVelocity.y = MathUtils.lerp(knockbackVelocity.y, 0, KNOCKBACK_DECAY * delta);
 
         if (health <= 0) {
-            dead = true;
+            isDead = true;
         }
 
         if (!grounded) {
