@@ -9,7 +9,7 @@ public class Player extends Sprite {
     public Vector2 velocity = new Vector2(0f, 0f);
     public Direction direction = Direction.RIGHT;
 
-    private float speed = 4f;
+    private float speed = 7f;
     private float gravity = -20f;
     private float jumpStrength = 8f;
     private boolean grounded = false;

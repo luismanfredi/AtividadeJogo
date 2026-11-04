@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Bullet extends Sprite {
 
-    public Vector2 velocity = new Vector2(8f, 0f);
+    public Vector2 velocity = new Vector2(12f, 0f);
     Direction direction;
     private boolean dead = false;
 
