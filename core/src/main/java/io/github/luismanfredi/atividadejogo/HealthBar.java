@@ -20,8 +20,6 @@ public class HealthBar extends Sprite {
         if (isPlayer) {
             setSize(barWidth,1f);
             hBar.setSize(barWidth,1f);
-            setColor(Color.WHITE);
-            hBar.setColor(Color.WHITE);
         } else {
             barWidth = 1.7f;
             setSize(barWidth, 0.15f);
@@ -40,7 +38,6 @@ public class HealthBar extends Sprite {
         time -= delta;
 
         if (time > 0) {
-
             setPosition(x - 0.35f, y + 1.5f);
             hBar.setPosition(x - 0.35f, y + 1.5f);
             hBar.setSize(barWidth * (enemyHealth / 30f), 0.15f);
