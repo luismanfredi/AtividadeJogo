@@ -21,7 +21,7 @@ public class HealthBar extends Sprite {
             setSize(barWidth,1f);
             hBar.setSize(barWidth,1f);
         } else {
-            barWidth = 1.7f;
+            barWidth *= (health / 100);
             setSize(barWidth, 0.15f);
             setColor(1, 1, 1, 0);
             hBar.setColor(1, 1, 1, 0);
@@ -34,13 +34,13 @@ public class HealthBar extends Sprite {
         hBar.setSize(barWidth * (playerHealth / 100f), 1f);
     }
 
-    public void update(float delta, float x, float y, float enemyHealth) {
+    public void update(float delta, float x, float y, float enemyHealth, float maxHealth) {
         time -= delta;
 
         if (time > 0) {
             setPosition(x - 0.35f, y + 1.5f);
             hBar.setPosition(x - 0.35f, y + 1.5f);
-            hBar.setSize(barWidth * (enemyHealth / 30f), 0.15f);
+            hBar.setSize(barWidth * (enemyHealth / maxHealth), 0.15f);
         } else {
             setColor(1, 1, 1, 0);
             hBar.setColor(1, 1, 1, 0);

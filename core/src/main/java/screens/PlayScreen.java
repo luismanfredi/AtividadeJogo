@@ -132,7 +132,7 @@ public class PlayScreen implements Screen {
 
         if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
             Enemy newEnemy = new Enemy(
-                new Sprite(enemyTexture),
+                new Sprite(tankEnemyTexture),
                 (TiledMapTileLayer) map.getLayers().get(0),
                 new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
 
@@ -210,15 +210,7 @@ public class PlayScreen implements Screen {
         timeCounter += delta;
 
         if (timeToSpawn <= 0) {
-            Enemy newEnemy = new Enemy(
-                new Sprite(enemyTexture),
-                (TiledMapTileLayer) map.getLayers().get(0),
-                new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
-
-            int[] position = ENEMY_POSITIONS_SPAWN[random.nextInt(0,6)];
-            newEnemy.setPosition(position[0], position[1]);
-
-            enemies.add(newEnemy);
+            chooseEnemy();
 
             if (timeCounter < 10f) {
                 timeToSpawn = 5f;
@@ -232,6 +224,47 @@ public class PlayScreen implements Screen {
         } else {
             timeToSpawn -= delta;
         }
+    }
+
+    public void chooseEnemy() {
+        int randomEnemy = random.nextInt(100) + 1;
+        Enemy newEnemy;
+
+        if (randomEnemy <= 50) {
+             newEnemy = new Enemy(
+                new Sprite(normalEnemyTexture),
+                (TiledMapTileLayer) map.getLayers().get(0),
+                new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
+
+            enemies.add(newEnemy);
+        } else if (randomEnemy <= 80) {
+            newEnemy = new Enemy(
+                new Sprite(fastEnemyTexture),
+                (TiledMapTileLayer) map.getLayers().get(0),
+                new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
+
+            newEnemy.maxHealth = 15f;
+            newEnemy.health = newEnemy.maxHealth;
+            newEnemy.speed = 9f;
+            newEnemy.damage = 15f;
+
+            enemies.add(newEnemy);
+        } else {
+            newEnemy = new Enemy(
+                new Sprite(tankEnemyTexture),
+                (TiledMapTileLayer) map.getLayers().get(0),
+                new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
+
+            newEnemy.maxHealth = 60f;
+            newEnemy.health = newEnemy.maxHealth;
+            newEnemy.speed = 1f;
+            newEnemy.damage = 40f;
+
+            enemies.add(newEnemy);
+        }
+
+        int[] position = ENEMY_POSITIONS_SPAWN[random.nextInt(0,6)];
+        newEnemy.setPosition(position[0], position[1]);
     }
 
     public void bulletSpawner(float delta) {

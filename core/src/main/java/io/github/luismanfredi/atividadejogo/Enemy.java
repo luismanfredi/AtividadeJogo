@@ -9,8 +9,9 @@ public class Enemy extends Sprite {
     public Vector2 velocity = new Vector2(0f, 0f);
     public Rectangle box = new Rectangle();
 
-    public float health = 30f;
-    private float speed = 3f;
+    public float health;
+    public float maxHealth = 30f;
+    public float speed = 3f;
     private float gravity = -20f;
     private float jumpStrength = 8f;
     public float damage = 25f;
@@ -24,13 +25,14 @@ public class Enemy extends Sprite {
         super(sprite);
         this.collisionLayer = collisionLayer;
         this.healthBar = healthBar;
+        this.health = maxHealth;
         healthBar.create(health, false);
         setSize(1f, 1f);
         box.setSize(1f, 1f);
     }
 
     public void update(float delta, float x, float y) {
-        healthBar.update(delta, getX(), getY(), health);
+        healthBar.update(delta, getX(), getY(), health, maxHealth);
 
         if (health <= 0) {
             isDead = true;
