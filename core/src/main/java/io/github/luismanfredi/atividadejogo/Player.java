@@ -17,6 +17,9 @@ public class Player extends Sprite {
     private float speed = 7f;
     private float gravity = -20f;
     private float jumpStrength = 8f;
+    public int xp = 0;
+    public int[] xpNeeded = {100, 120, 160, 200, 240};
+    private int playerLevel = 0;
     private boolean grounded = false;
     public boolean isDead = false;
 
@@ -38,6 +41,11 @@ public class Player extends Sprite {
     }
 
     public void update(float delta) {
+        if (xp >= xpNeeded[playerLevel]) {
+            xp = 0;
+            playerLevel += 1;
+        }
+
         if (isInvulnerable) {
             invulnerabilityTimer -= delta;
             if ((int)(invulnerabilityTimer * 15) % 2 == 0) {

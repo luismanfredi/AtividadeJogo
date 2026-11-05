@@ -117,6 +117,7 @@ public class PlayScreen implements Screen {
 
             if (enemy.isDead) {
                 iterator.remove();
+                player.xp += 25;
                 continue;
             }
 
