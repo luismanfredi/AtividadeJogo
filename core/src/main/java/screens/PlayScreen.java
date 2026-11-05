@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -38,6 +39,8 @@ public class PlayScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private HealthBar healthBar;
+    private BitmapFont font = new BitmapFont();
+    private float timeCounter = 0.0f;
 
     private Random random = new Random();
     private int[][] spawnEnemyPositions = {{0, 5}, {2, 5}, {1, 6}, {79, 16}, {77, 16}, {75, 15}};
@@ -55,6 +58,8 @@ public class PlayScreen implements Screen {
         input(delta);
         logic(delta);
 
+        timeCounter += delta;
+
         if (timeToSpawn <= 0) {
             Enemy newEnemy = new Enemy(new Sprite(enemyTexture), (TiledMapTileLayer) map.getLayers().get(0));
 
@@ -62,7 +67,16 @@ public class PlayScreen implements Screen {
             newEnemy.setPosition(position[0], position[1]);
 
             enemies.add(newEnemy);
-            timeToSpawn = 5f;
+
+            if (timeCounter < 10f) {
+                timeToSpawn = 5f;
+            } else if (timeCounter < 30f) {
+                timeToSpawn = 2.5f;
+            } else if (timeCounter < 60f) {
+                timeToSpawn = 1.0f;
+            } else if (timeCounter > 60f) {
+                timeToSpawn = 0.25f;
+            }
         } else {
             timeToSpawn -= delta;
         }
@@ -216,7 +230,6 @@ public class PlayScreen implements Screen {
         barHealthTexture = new Texture(Gdx.files.internal("barra_vida.png"));
 
         healthBar = new HealthBar(new Sprite(barBGTexture), new Sprite(barHealthTexture));
-
     }
 
     @Override
