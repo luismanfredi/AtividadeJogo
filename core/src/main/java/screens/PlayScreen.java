@@ -270,7 +270,7 @@ public class PlayScreen implements Screen {
             }
 
             if (player.box.overlaps(enemy.box) && !player.isInvulnerable) {
-                player.takeDamage();
+                player.takeDamage(enemy.damage);
 
                 Vector2 direction = new Vector2(player.getX() - enemy.getX(), player.getY() - enemy.getY());
                 direction.nor();

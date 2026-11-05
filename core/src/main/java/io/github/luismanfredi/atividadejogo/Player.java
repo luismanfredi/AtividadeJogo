@@ -140,9 +140,9 @@ public class Player extends Sprite {
         return cell != null && cell.getTile() != null;
     }
 
-    public void takeDamage() {
+    public void takeDamage(float damage) {
         if (!isInvulnerable) {
-            health -= 20;
+            health -= damage;
 
             isInvulnerable = true;
             invulnerabilityTimer = INVULNERABILITY_DURATION;
