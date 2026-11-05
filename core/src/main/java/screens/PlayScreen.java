@@ -30,7 +30,9 @@ public class PlayScreen implements Screen {
     private ArrayList<Bullet> bullets = new ArrayList<>();
 
     private Texture playerTexture;
-    private Texture enemyTexture;
+    private Texture normalEnemyTexture;
+    private Texture tankEnemyTexture;
+    private Texture fastEnemyTexture;
     private Texture bulletTexture;
     private Texture barBGTexture;
     private Texture barHealthTexture;
@@ -166,7 +168,9 @@ public class PlayScreen implements Screen {
         player = new Player(new Sprite(playerTexture), (TiledMapTileLayer) map.getLayers().get(0));
         player.setPosition(9f, 4f);
 
-        enemyTexture = new Texture((Gdx.files.internal("inimigo.png")));
+        normalEnemyTexture = new Texture((Gdx.files.internal("inimigo.png")));
+        tankEnemyTexture = new Texture((Gdx.files.internal("inimigo2.png")));
+        fastEnemyTexture = new Texture((Gdx.files.internal("inimigo3.png")));
 
         bulletTexture = new Texture((Gdx.files.internal("bala.png")));
 
