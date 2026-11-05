@@ -9,23 +9,28 @@ public class Enemy extends Sprite {
     public Vector2 velocity = new Vector2(0f, 0f);
     public Rectangle box = new Rectangle();
 
-    private float health = 30f;
+    public float health = 30f;
     private float speed = 3f;
     private float gravity = -20f;
     private float jumpStrength = 8f;
     boolean grounded = false;
     public boolean isDead = false;
+    public HealthBar healthBar;
 
     private TiledMapTileLayer collisionLayer;
 
-    public Enemy(Sprite sprite, TiledMapTileLayer collisionLayer) {
+    public Enemy(Sprite sprite, TiledMapTileLayer collisionLayer, HealthBar healthBar) {
         super(sprite);
         this.collisionLayer = collisionLayer;
+        this.healthBar = healthBar;
+        healthBar.create(health, false);
         setSize(1f, 1f);
         box.setSize(1f, 1f);
     }
 
     public void update(float delta, float x, float y) {
+        healthBar.update(delta, getX(), getY(), health);
+
         if (health <= 0) {
             isDead = true;
         }
@@ -104,6 +109,12 @@ public class Enemy extends Sprite {
 
     public void takeDamage() {
         health -= 15f;
+        healthBar.time = 15f;
+        healthBar.setColor(1, 1, 1, 0.5f);
+        healthBar.hBar.setColor(1, 1, 1, 0.5f);
+    }
+
+    public void updateHealthBar(float delta) {
     }
 
     public void jump() {

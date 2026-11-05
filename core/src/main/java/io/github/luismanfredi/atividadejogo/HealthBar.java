@@ -7,12 +7,25 @@ public class HealthBar extends Sprite {
 
     public Sprite hBar;
     private float barWidth = 5f;
+    public float time = 0f;
 
     public HealthBar(Sprite bgBar, Sprite hBar){
         super(bgBar);
         this.hBar = hBar;
-        setSize(5f,1f);
-        hBar.setSize(5f,1f);
+
+    }
+
+    public void create(float health, boolean isPlayer) {
+        if (isPlayer) {
+            setSize(barWidth,1f);
+            hBar.setSize(barWidth,1f);
+        } else {
+            barWidth = 1.7f;
+            setSize(barWidth, 0.15f);
+        }
+
+        setColor(1, 1, 1, 0.5f);
+        hBar.setColor(1, 1, 1, 0.5f);
     }
 
     public void update(float delta, OrthographicCamera camera, float playerHealth){
@@ -21,4 +34,18 @@ public class HealthBar extends Sprite {
         hBar.setSize(barWidth * (playerHealth / 100f), 1f);
     }
 
+    public void update(float delta, float x, float y, float enemyHealth) {
+        time -= 0.2f;
+
+        if (time < 20 && time > 0) {
+
+            setPosition(x - 0.35f, y + 1.5f);
+            hBar.setPosition(x - 0.35f, y + 1.5f);
+            hBar.setSize(barWidth * (enemyHealth / 30f), 0.15f);
+        } else {
+            setColor(1, 1, 1, 0);
+            hBar.setColor(1, 1, 1, 0);
+        }
+
+    }
 }

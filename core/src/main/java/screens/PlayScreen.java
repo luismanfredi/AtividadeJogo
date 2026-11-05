@@ -61,7 +61,10 @@ public class PlayScreen implements Screen {
         timeCounter += delta;
 
         if (timeToSpawn <= 0) {
-            Enemy newEnemy = new Enemy(new Sprite(enemyTexture), (TiledMapTileLayer) map.getLayers().get(0));
+            Enemy newEnemy = new Enemy(
+                new Sprite(enemyTexture),
+                (TiledMapTileLayer) map.getLayers().get(0),
+                new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
 
             int[] position = spawnEnemyPositions[random.nextInt(0,6)];
             newEnemy.setPosition(position[0], position[1]);
@@ -152,6 +155,8 @@ public class PlayScreen implements Screen {
 
         for (Enemy enemy : enemies) {
             enemy.draw(game.spriteBatch);
+            enemy.healthBar.draw(game.spriteBatch);
+            enemy.healthBar.hBar.draw(game.spriteBatch);
         }
 
         for (Bullet b : bullets) {
@@ -189,6 +194,17 @@ public class PlayScreen implements Screen {
             newBullet.spawn(player.getX(), player.getY(), player.direction);
 
             bullets.add(newBullet);
+        }
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
+            Enemy newEnemy = new Enemy(
+                new Sprite(enemyTexture),
+                (TiledMapTileLayer) map.getLayers().get(0),
+                new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
+
+            newEnemy.setPosition(0f, 5f);
+
+            enemies.add(newEnemy);
         }
     }
 
@@ -231,6 +247,7 @@ public class PlayScreen implements Screen {
         barHealthTexture = new Texture(Gdx.files.internal("barra_vida.png"));
 
         healthBar = new HealthBar(new Sprite(barBGTexture), new Sprite(barHealthTexture));
+        healthBar.create(player.health, true);
     }
 
     @Override
