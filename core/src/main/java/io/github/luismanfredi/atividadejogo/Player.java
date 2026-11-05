@@ -12,7 +12,7 @@ public class Player extends Sprite {
     public Direction direction = Direction.RIGHT;
     public Rectangle box = new Rectangle();
 
-    public float max_health = 100f;
+    private final float MAX_HEALTH = 100f;
     public float health;
     private float speed = 7f;
     private float gravity = -20f;
@@ -34,14 +34,14 @@ public class Player extends Sprite {
         this.collisionLayer = collisionLayer;
         setSize(1f, 1f);
         box.setSize(1f, 1f);
-        this.health = this.max_health;
+        this.health = this.MAX_HEALTH;
     }
 
     public void update(float delta) {
         if (isInvulnerable) {
             invulnerabilityTimer -= delta;
             if ((int)(invulnerabilityTimer * 15) % 2 == 0) {
-                setColor(1, 1, 1, 0.3f); // Desenha com 30% de opacidade (transparente)
+                setColor(1, 1, 1, 0.3f);
             } else {
                 setColor(1, 1, 1, 1f);
             }

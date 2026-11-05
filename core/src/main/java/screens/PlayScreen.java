@@ -19,6 +19,7 @@ import io.github.luismanfredi.atividadejogo.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 public class PlayScreen implements Screen {
 
@@ -32,11 +33,15 @@ public class PlayScreen implements Screen {
     private Texture bulletTexture;
     private Texture barBGTexture;
     private Texture barHealthTexture;
-    public StretchViewport viewport;
+    private StretchViewport viewport;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private HealthBar healthBar;
+
+    private Random random = new Random();
+    private int[][] spawnEnemyPositions = {{0, 5}, {2, 5}, {1, 6}, {79, 16}, {77, 16}, {75, 15}};
+    private float timeToSpawn = 2f;
 
     private final float MAP_WIDTH = 80f;
     private final float MAP_HEIGHT = 20f;
@@ -49,6 +54,18 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         input(delta);
         logic(delta);
+
+        if (timeToSpawn <= 0) {
+            Enemy newEnemy = new Enemy(new Sprite(enemyTexture), (TiledMapTileLayer) map.getLayers().get(0));
+
+            int[] position = spawnEnemyPositions[random.nextInt(0,6)];
+            newEnemy.setPosition(position[0], position[1]);
+
+            enemies.add(newEnemy);
+            timeToSpawn = 5f;
+        } else {
+            timeToSpawn -= delta;
+        }
 
         player.update(delta);
         if (player.isDead) {
@@ -157,14 +174,6 @@ public class PlayScreen implements Screen {
             newBullet.spawn(player.getX(), player.getY(), player.direction);
 
             bullets.add(newBullet);
-        }
-
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
-            Enemy newEnemy = new Enemy(new Sprite(enemyTexture), (TiledMapTileLayer) map.getLayers().get(0));
-
-            newEnemy.setPosition(9f, 4f);
-
-            enemies.add(newEnemy);
         }
     }
 
