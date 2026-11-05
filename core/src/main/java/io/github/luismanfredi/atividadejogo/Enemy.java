@@ -107,8 +107,8 @@ public class Enemy extends Sprite {
         return cell != null && cell.getTile() != null;
     }
 
-    public void takeDamage() {
-        health -= 15f;
+    public void takeDamage(float damage) {
+        health -= damage;
         healthBar.time = 15f;
         healthBar.setColor(1, 1, 1, 0.5f);
         healthBar.hBar.setColor(1, 1, 1, 0.5f);

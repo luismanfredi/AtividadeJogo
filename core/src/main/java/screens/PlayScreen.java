@@ -255,7 +255,7 @@ public class PlayScreen implements Screen {
                 Bullet bullet = bulletIterator2.next();
 
                 if (bullet.box.overlaps(enemy.box)) {
-                    enemy.takeDamage();
+                    enemy.takeDamage(bullet.damage);
                     bulletIterator2.remove();
                     break;
                 }

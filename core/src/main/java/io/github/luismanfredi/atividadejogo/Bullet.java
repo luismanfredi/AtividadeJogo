@@ -12,6 +12,7 @@ public class Bullet extends Sprite {
     public Vector2 velocity = new Vector2(12f, 0f);
     Direction direction;
     private boolean dead = false;
+    public float damage = 15f;
 
     public Rectangle box = new Rectangle();
 
