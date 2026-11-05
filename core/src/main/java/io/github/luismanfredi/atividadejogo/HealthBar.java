@@ -1,5 +1,6 @@
 package io.github.luismanfredi.atividadejogo;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -19,13 +20,14 @@ public class HealthBar extends Sprite {
         if (isPlayer) {
             setSize(barWidth,1f);
             hBar.setSize(barWidth,1f);
+            setColor(Color.WHITE);
+            hBar.setColor(Color.WHITE);
         } else {
             barWidth = 1.7f;
             setSize(barWidth, 0.15f);
+            setColor(1, 1, 1, 0);
+            hBar.setColor(1, 1, 1, 0);
         }
-
-        setColor(1, 1, 1, 0.5f);
-        hBar.setColor(1, 1, 1, 0.5f);
     }
 
     public void update(float delta, OrthographicCamera camera, float playerHealth){
@@ -35,9 +37,9 @@ public class HealthBar extends Sprite {
     }
 
     public void update(float delta, float x, float y, float enemyHealth) {
-        time -= 0.2f;
+        time -= delta;
 
-        if (time < 20 && time > 0) {
+        if (time > 0) {
 
             setPosition(x - 0.35f, y + 1.5f);
             hBar.setPosition(x - 0.35f, y + 1.5f);

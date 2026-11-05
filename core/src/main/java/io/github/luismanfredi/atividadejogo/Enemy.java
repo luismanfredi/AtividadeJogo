@@ -114,9 +114,6 @@ public class Enemy extends Sprite {
         healthBar.hBar.setColor(1, 1, 1, 0.5f);
     }
 
-    public void updateHealthBar(float delta) {
-    }
-
     public void jump() {
         if (grounded) {
             velocity.y = jumpStrength;

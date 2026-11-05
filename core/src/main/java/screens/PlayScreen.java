@@ -43,7 +43,7 @@ public class PlayScreen implements Screen {
     private float timeCounter = 0.0f;
 
     private Random random = new Random();
-    private int[][] spawnEnemyPositions = {{0, 5}, {2, 5}, {1, 6}, {79, 16}, {77, 16}, {75, 15}};
+    private final int[][] ENEMY_POSITIONS_SPAWN = {{0, 5}, {2, 5}, {1, 6}, {79, 16}, {77, 16}, {75, 15}};
     private float timeToSpawn = 2f;
 
     private final float MAP_WIDTH = 80f;
@@ -57,32 +57,8 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         input(delta);
         logic(delta);
-
-        timeCounter += delta;
-
-        if (timeToSpawn <= 0) {
-            Enemy newEnemy = new Enemy(
-                new Sprite(enemyTexture),
-                (TiledMapTileLayer) map.getLayers().get(0),
-                new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
-
-            int[] position = spawnEnemyPositions[random.nextInt(0,6)];
-            newEnemy.setPosition(position[0], position[1]);
-
-            enemies.add(newEnemy);
-
-            if (timeCounter < 10f) {
-                timeToSpawn = 5f;
-            } else if (timeCounter < 30f) {
-                timeToSpawn = 2.5f;
-            } else if (timeCounter < 60f) {
-                timeToSpawn = 1.0f;
-            } else if (timeCounter > 60f) {
-                timeToSpawn = 0.25f;
-            }
-        } else {
-            timeToSpawn -= delta;
-        }
+        enemySpawner(delta);
+        bulletSpawner(delta);
 
         player.update(delta);
         if (player.isDead) {
@@ -90,50 +66,6 @@ public class PlayScreen implements Screen {
         }
 
         healthBar.update(delta, camera, player.health);
-
-        Iterator<Bullet> bulletIterator = bullets.iterator();
-        while (bulletIterator.hasNext()) {
-            Bullet bullet = bulletIterator.next();
-            bullet.update(delta);
-
-            if (bullet.isDead() || bullet.getX() > MAP_WIDTH || bullet.getX() < 0) {
-                bulletIterator.remove();
-            }
-        }
-
-        Iterator<Enemy> iterator = enemies.iterator();
-        while (iterator.hasNext()) {
-            Enemy enemy = iterator.next();
-
-            Iterator<Bullet> bulletIterator2 = bullets.iterator();
-            while (bulletIterator2.hasNext()) {
-                Bullet bullet = bulletIterator2.next();
-
-                if (bullet.box.overlaps(enemy.box)) {
-                    enemy.takeDamage();
-                    bulletIterator2.remove();
-                    break;
-                }
-            }
-
-            enemy.update(delta, player.getX(), player.getY());
-
-            if (enemy.isDead) {
-                iterator.remove();
-                player.xp += 25;
-                continue;
-            }
-
-            if (player.box.overlaps(enemy.box) && !player.isInvulnerable) {
-                player.takeDamage();
-
-                Vector2 direction = new Vector2(player.getX() - enemy.getX(), player.getY() - enemy.getY());
-                direction.nor();
-
-                float knockbackStrength = 20f;
-                player.knockbackVelocity.set(direction.x * knockbackStrength, direction.y * knockbackStrength);
-            }
-        }
 
         float cameraHalfWidth = viewport.getWorldWidth() / 2f;
 
@@ -208,11 +140,6 @@ public class PlayScreen implements Screen {
         }
     }
 
-    private void logic(float delta) {
-        float playerWidth = player.getWidth();
-        player.setX(MathUtils.clamp(player.getX(), 0, MAP_WIDTH - playerWidth));
-    }
-
     @Override
     public void resize(int width, int height) {
         float aspectRadio = (float) width / (float) height;
@@ -271,5 +198,86 @@ public class PlayScreen implements Screen {
         renderer.dispose();
         playerTexture.dispose();
         bulletTexture.dispose();
+        barBGTexture.dispose();
+        barHealthTexture.dispose();
+    }
+
+    public void enemySpawner(float delta) {
+        timeCounter += delta;
+
+        if (timeToSpawn <= 0) {
+            Enemy newEnemy = new Enemy(
+                new Sprite(enemyTexture),
+                (TiledMapTileLayer) map.getLayers().get(0),
+                new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
+
+            int[] position = ENEMY_POSITIONS_SPAWN[random.nextInt(0,6)];
+            newEnemy.setPosition(position[0], position[1]);
+
+            enemies.add(newEnemy);
+
+            if (timeCounter < 10f) {
+                timeToSpawn = 5f;
+            } else if (timeCounter < 30f) {
+                timeToSpawn = 2.5f;
+            } else if (timeCounter < 60f) {
+                timeToSpawn = 1.0f;
+            } else if (timeCounter > 60f) {
+                timeToSpawn = 0.25f;
+            }
+        } else {
+            timeToSpawn -= delta;
+        }
+    }
+
+    public void bulletSpawner(float delta) {
+        Iterator<Bullet> bulletIterator = bullets.iterator();
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
+            bullet.update(delta);
+
+            if (bullet.isDead() || bullet.getX() > MAP_WIDTH || bullet.getX() < 0) {
+                bulletIterator.remove();
+            }
+        }
+    }
+
+    public void logic(float delta) {
+        float playerWidth = player.getWidth();
+        player.setX(MathUtils.clamp(player.getX(), 0, MAP_WIDTH - playerWidth)); // personagem não ir para fora do mapa
+
+        Iterator<Enemy> iterator = enemies.iterator();
+        while (iterator.hasNext()) {
+            Enemy enemy = iterator.next();
+
+            Iterator<Bullet> bulletIterator2 = bullets.iterator();
+            while (bulletIterator2.hasNext()) {
+                Bullet bullet = bulletIterator2.next();
+
+                if (bullet.box.overlaps(enemy.box)) {
+                    enemy.takeDamage();
+                    bulletIterator2.remove();
+                    break;
+                }
+            }
+
+            enemy.update(delta, player.getX(), player.getY());
+
+            if (enemy.isDead) {
+                iterator.remove();
+                player.xp += 25;
+                continue;
+            }
+
+            if (player.box.overlaps(enemy.box) && !player.isInvulnerable) {
+                player.takeDamage();
+
+                Vector2 direction = new Vector2(player.getX() - enemy.getX(), player.getY() - enemy.getY());
+                direction.nor();
+
+                float knockbackStrength = 20f;
+                player.knockbackVelocity.set(direction.x * knockbackStrength, direction.y * knockbackStrength);
+            }
+        }
     }
 }
