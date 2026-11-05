@@ -132,7 +132,7 @@ public class PlayScreen implements Screen {
 
         if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
             Enemy newEnemy = new Enemy(
-                new Sprite(tankEnemyTexture),
+                new Sprite(normalEnemyTexture),
                 (TiledMapTileLayer) map.getLayers().get(0),
                 new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
 
@@ -243,9 +243,9 @@ public class PlayScreen implements Screen {
                 (TiledMapTileLayer) map.getLayers().get(0),
                 new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
 
-            newEnemy.maxHealth = 15f;
+            newEnemy.maxHealth = 45f;
             newEnemy.health = newEnemy.maxHealth;
-            newEnemy.speed = 9f;
+            newEnemy.speed = 5f;
             newEnemy.damage = 15f;
 
             enemies.add(newEnemy);
@@ -255,9 +255,9 @@ public class PlayScreen implements Screen {
                 (TiledMapTileLayer) map.getLayers().get(0),
                 new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
 
-            newEnemy.maxHealth = 60f;
+            newEnemy.maxHealth = 150f;
             newEnemy.health = newEnemy.maxHealth;
-            newEnemy.speed = 1f;
+            newEnemy.speed = 1.5f;
             newEnemy.damage = 40f;
 
             enemies.add(newEnemy);
