@@ -14,7 +14,7 @@ public class Enemy extends Sprite {
     public float speed = 3f;
     private float gravity = -20f;
     private float jumpStrength = 8f;
-    public float damage = 25f;
+    public float damage = 17f;
     boolean grounded = false;
     public boolean isDead = false;
     public HealthBar healthBar;

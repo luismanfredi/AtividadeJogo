@@ -213,14 +213,15 @@ public class PlayScreen implements Screen {
             chooseEnemy();
 
             if (timeCounter < 10f) {
-                timeToSpawn = 5f;
+                timeToSpawn = 5.0f;
             } else if (timeCounter < 30f) {
                 timeToSpawn = 2.5f;
             } else if (timeCounter < 60f) {
-                timeToSpawn = 1.0f;
+                timeToSpawn = 2.0f;
             } else if (timeCounter > 60f) {
-                timeToSpawn = 0.25f;
+                timeToSpawn = 1.0f;
             }
+
         } else {
             timeToSpawn -= delta;
         }
@@ -243,10 +244,10 @@ public class PlayScreen implements Screen {
                 (TiledMapTileLayer) map.getLayers().get(0),
                 new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
 
-            newEnemy.maxHealth = 45f;
+            newEnemy.maxHealth = 10f;
             newEnemy.health = newEnemy.maxHealth;
             newEnemy.speed = 5f;
-            newEnemy.damage = 15f;
+            newEnemy.damage = 12.5f;
 
             enemies.add(newEnemy);
         } else {
@@ -255,10 +256,10 @@ public class PlayScreen implements Screen {
                 (TiledMapTileLayer) map.getLayers().get(0),
                 new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
 
-            newEnemy.maxHealth = 150f;
+            newEnemy.maxHealth = 100f;
             newEnemy.health = newEnemy.maxHealth;
             newEnemy.speed = 1.5f;
-            newEnemy.damage = 40f;
+            newEnemy.damage = 25f;
 
             enemies.add(newEnemy);
         }
