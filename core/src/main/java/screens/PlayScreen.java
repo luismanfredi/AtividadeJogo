@@ -41,10 +41,9 @@ public class PlayScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private HealthBar healthBar;
-    private BitmapFont font = new BitmapFont();
     private float timeCounter = 0.0f;
 
-    private Random random = new Random();
+    private final Random random = new Random();
     private final int[][] ENEMY_POSITIONS_SPAWN = {{0, 5}, {2, 5}, {1, 6}, {79, 16}, {77, 16}, {75, 15}};
     private float timeToSpawn = 2f;
 

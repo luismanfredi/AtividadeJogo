@@ -3,8 +3,7 @@ package io.github.luismanfredi.atividadejogo;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import screens.PlayScreen;
-
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+import screens.TitleScreen;
 
 public class Core extends Game {
     public SpriteBatch spriteBatch;
@@ -12,7 +11,7 @@ public class Core extends Game {
     @Override
     public void create() {
         spriteBatch = new SpriteBatch();
-        setScreen(new PlayScreen(this));
+        setScreen(new TitleScreen(this));
     }
 
     @Override
