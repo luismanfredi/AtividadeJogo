@@ -40,10 +40,10 @@ public class TitleScreen implements Screen {
         stage = new Stage(new ExtendViewport(1280, 720), game.spriteBatch);
         Gdx.input.setInputProcessor(stage); // faz o stage receber cliques
 
-        menuTexture = new Texture(Gdx.files.internal("menu.png"));
-        titleTexture = new Texture(Gdx.files.internal("titulo.png"));
-        startTexture = new Texture(Gdx.files.internal("start.png"));
-        quitTexture = new Texture(Gdx.files.internal("quit.jpeg"));
+        menuTexture = new Texture(Gdx.files.internal("ui/menu.png"));
+        titleTexture = new Texture(Gdx.files.internal("ui/game_title.png"));
+        startTexture = new Texture(Gdx.files.internal("ui/button_play.png"));
+        quitTexture = new Texture(Gdx.files.internal("ui/button_exit.png"));
 
         Image title = new Image(titleTexture);
 
@@ -92,11 +92,11 @@ public class TitleScreen implements Screen {
         stage.addActor(table);
 
 
-        table.add(title).center().width(500).height(150);
+        table.add(title).center().width(500).height(120);
         table.row().padTop(100);
-        table.add(startButton).center().width(300).height(90);
-        table.row().padTop(100);
-        table.add(quitButton).center().width(300).height(90);
+        table.add(startButton).center().width(380).height(120);
+        table.row().padTop(80);
+        table.add(quitButton).center().width(380).height(120);
     }
 
     @Override

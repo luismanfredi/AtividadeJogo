@@ -44,7 +44,7 @@ public class PlayScreen implements Screen {
     private float timeCounter = 0.0f;
 
     private final Random random = new Random();
-    private final int[][] ENEMY_POSITIONS_SPAWN = {{0, 5}, {2, 5}, {1, 6}, {79, 16}, {77, 16}, {75, 15}};
+    private final int[][] ENEMY_POSITIONS_SPAWN = {{0, 5}, {2, 5}, {6, 4}, {79, 5}, {77, 5}, {75, 5}};
     private float timeToSpawn = 2f;
 
     private final float MAP_WIDTH = 80f;
