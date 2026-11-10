@@ -99,15 +99,17 @@ public class PlayScreen implements Screen {
                     Gdx.app.exit();
                 }
 
-                healthBar.update(delta, camera, player.health);
+                if (player.playerUpgraded) {
+                    gameState = GameState.UPGRADE_SCREEN;
+                    Table table = choosePowers();
+                    stage.addActor(table);
+                }
 
+                healthBar.update(delta, camera, player.health);
                 drawGame();
                 break;
             case UPGRADE_SCREEN:
                 drawGame();
-
-
-
                 stage.act(delta);
                 stage.draw();
                 break;
@@ -226,14 +228,12 @@ public class PlayScreen implements Screen {
         Table table = new Table();
         table.setFillParent(true);
 
-        Power power;
-
         ArrayList<Power> AvailablePowers = new ArrayList<>(this.powers);
 
         for (int i = 0; i < 4; i++) {
             int randomIndex = random.nextInt(AvailablePowers.size());
 
-            power = AvailablePowers.remove(randomIndex);
+            Power power = AvailablePowers.remove(randomIndex);
 
             powerClick(power.button);
             table.add(power.button).center().width(450).height(120);
@@ -425,9 +425,6 @@ public class PlayScreen implements Screen {
             if (enemy.isDead) {
                 iterator.remove();
                 player.xp += 25;
-                gameState = GameState.UPGRADE_SCREEN;
-                Table table = choosePowers();
-                stage.addActor(table);
                 continue;
             }
 

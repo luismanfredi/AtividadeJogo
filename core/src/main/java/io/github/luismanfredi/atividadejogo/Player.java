@@ -18,10 +18,11 @@ public class Player extends Sprite {
     private float gravity = -20f;
     private float jumpStrength = 8f;
     public int xp = 0;
-    public int[] xpNeeded = {100, 120, 160, 200, 240};
-    private int playerLevel = 0;
+    public int[] xpNeeded = {100, 125, 175, 250, 300};
+    public int playerLevel = 0;
     private boolean grounded = false;
     public boolean isDead = false;
+    public boolean playerUpgraded = false;
 
     public Vector2 knockbackVelocity = new Vector2(0f, 0f);
     private final float KNOCKBACK_DECAY = 5f;
@@ -41,9 +42,12 @@ public class Player extends Sprite {
     }
 
     public void update(float delta) {
+        playerUpgraded = false;
+
         if (xp >= xpNeeded[playerLevel]) {
             xp = 0;
             playerLevel += 1;
+            playerUpgraded = true;
         }
 
         if (isInvulnerable) {
