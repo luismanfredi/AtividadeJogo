@@ -41,7 +41,6 @@ public class PlayScreen implements Screen {
     private Player player;
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Bullet> bullets = new ArrayList<>();
-    private final String[] powers = {"double_shoot", "frozen", "more_dmg"};
     private GameState gameState = GameState.RUNNING;
 
     private Texture playerTexture;
@@ -51,6 +50,23 @@ public class PlayScreen implements Screen {
     private Texture bulletTexture;
     private Texture barBGTexture;
     private Texture barHealthTexture;
+
+    private Texture upgradeBGTexture;
+    private Texture moreDMGTexture;
+    private Texture doubleShootTexture;
+    private Texture frozenTexture;
+    private Texture higherJumpTexture;
+    private Texture fasterTexture;
+    private Texture dmgTexture;
+
+    private Power moreDMG;
+    private Power doubleShoot;
+    private Power frozen;
+    private Power higherJump;
+    private Power faster;
+    private Power dmg;
+    private ArrayList<Power> powers = new ArrayList<>();
+
     private StretchViewport viewport;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
@@ -89,6 +105,8 @@ public class PlayScreen implements Screen {
                 break;
             case UPGRADE_SCREEN:
                 drawGame();
+
+
 
                 stage.act(delta);
                 stage.draw();
@@ -173,41 +191,56 @@ public class PlayScreen implements Screen {
         stage = new Stage(new ExtendViewport(1280, 900), game.spriteBatch);
         Gdx.input.setInputProcessor(stage);
 
-        Texture upgradeBGTexture = new Texture(Gdx.files.internal("upgradeUI/upgrade_bg.png"));
-        Texture moreDMGTexture = new Texture(Gdx.files.internal("upgradeUI/more_dmg.png"));
-        Texture doubleShootTexture = new Texture(Gdx.files.internal("upgradeUI/double_shoot.png"));
-        Texture frozenTexture = new Texture(Gdx.files.internal("upgradeUI/frozen.png"));
-        Texture higherJumpTexture = new Texture(Gdx.files.internal("upgradeUI/higher_jump.png"));
+        upgradeBGTexture = new Texture(Gdx.files.internal("upgradeUI/upgrade_bg.png"));
+        moreDMGTexture = new Texture(Gdx.files.internal("upgradeUI/more_dmg.png"));
+        doubleShootTexture = new Texture(Gdx.files.internal("upgradeUI/double_shoot.png"));
+        frozenTexture = new Texture(Gdx.files.internal("upgradeUI/frozen.png"));
+        higherJumpTexture = new Texture(Gdx.files.internal("upgradeUI/higher_jump.png"));
+        fasterTexture = new Texture(Gdx.files.internal("upgradeUI/faster.png"));
+        dmgTexture = new Texture(Gdx.files.internal("upgradeUI/dmg.png"));
 
         Image upgradeBG = new Image(upgradeBGTexture);
 
-        ImageButton moreDMGButton = new ImageButton(new TextureRegionDrawable(moreDMGTexture));
-        powerClick(moreDMGButton);
+        moreDMG = new Power(moreDMGTexture);
+        doubleShoot = new Power(doubleShootTexture);
+        frozen = new Power(frozenTexture);
+        higherJump = new Power(higherJumpTexture);
+        faster = new Power(fasterTexture);
+        dmg = new Power(dmgTexture);
 
-        ImageButton doubleShootButton = new ImageButton(new TextureRegionDrawable(doubleShootTexture));
-        powerClick(doubleShootButton);
-
-        ImageButton frozenButton = new ImageButton(new TextureRegionDrawable(frozenTexture));
-        powerClick(frozenButton);
-
-        ImageButton higherJumpButton = new ImageButton(new TextureRegionDrawable(higherJumpTexture));
-        powerClick(higherJumpButton);
+        powers.add(moreDMG);
+        powers.add(doubleShoot);
+        powers.add(frozen);
+        powers.add(higherJump);
+        powers.add(faster);
+        powers.add(dmg);
 
         Table tableBG = new Table();
-        Table table = new Table();
         tableBG.setFillParent(true);
-        table.setFillParent(true);
         stage.addActor(tableBG);
-        stage.addActor(table);
 
         tableBG.add(upgradeBG).center().expand().width(570).height(760);
-        table.add(moreDMGButton).center().width(450).height(120);
-        table.row().padTop(50);
-        table.add(doubleShootButton).center().width(450).height(120);
-        table.row().padTop(50);
-        table.add(frozenButton).center().width(450).height(120);
-        table.row().padTop(50);
-        table.add(higherJumpButton).center().width(450).height(120);
+    }
+
+    private Table choosePowers() {
+        Table table = new Table();
+        table.setFillParent(true);
+
+        Power power;
+
+        ArrayList<Power> AvailablePowers = new ArrayList<>(this.powers);
+
+        for (int i = 0; i < 4; i++) {
+            int randomIndex = random.nextInt(AvailablePowers.size());
+
+            power = AvailablePowers.remove(randomIndex);
+
+            powerClick(power.button);
+            table.add(power.button).center().width(450).height(120);
+            table.row().padTop(50);
+        }
+
+        return table;
     }
 
     private void powerClick(ImageButton powerButton) {
@@ -393,6 +426,8 @@ public class PlayScreen implements Screen {
                 iterator.remove();
                 player.xp += 25;
                 gameState = GameState.UPGRADE_SCREEN;
+                Table table = choosePowers();
+                stage.addActor(table);
                 continue;
             }
 
