@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -14,7 +15,18 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import io.github.luismanfredi.atividadejogo.*;
 
@@ -25,9 +37,12 @@ import java.util.Random;
 public class PlayScreen implements Screen {
 
     private final Core game;
+    private Stage stage;
     private Player player;
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Bullet> bullets = new ArrayList<>();
+    private final String[] powers = {"double_shoot", "frozen", "more_dmg"};
+    private GameState gameState = GameState.RUNNING;
 
     private Texture playerTexture;
     private Texture normalEnemyTexture;
@@ -56,18 +71,32 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        input(delta);
-        logic(delta);
-        enemySpawner(delta);
-        bulletSpawner(delta);
+        switch (gameState) {
+            case RUNNING:
+                input(delta);
+                logic(delta);
+                enemySpawner(delta);
+                bulletSpawner(delta);
 
-        player.update(delta);
-        if (player.isDead) {
-            Gdx.app.exit();
+                player.update(delta);
+                if (player.isDead) {
+                    Gdx.app.exit();
+                }
+
+                healthBar.update(delta, camera, player.health);
+
+                drawGame();
+                break;
+            case UPGRADE_SCREEN:
+                drawGame();
+
+                stage.act(delta);
+                stage.draw();
+                break;
         }
+    }
 
-        healthBar.update(delta, camera, player.health);
-
+    private void drawGame() {
         float cameraHalfWidth = viewport.getWorldWidth() / 2f;
 
         float targetX = MathUtils.clamp(player.getX() + player.getWidth() / 2f, cameraHalfWidth, MAP_WIDTH - cameraHalfWidth);
@@ -100,45 +129,6 @@ public class PlayScreen implements Screen {
         healthBar.hBar.draw(game.spriteBatch);
 
         game.spriteBatch.end();
-    }
-
-    private void input(float delta) {
-        player.velocity.x = 0;
-
-        if (player.knockbackVelocity.len() < 5f) {
-            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                player.moveRight();
-                player.direction = Direction.RIGHT;
-            }
-
-            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                player.moveLeft();
-                player.direction = Direction.LEFT;
-            }
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.jump();
-        }
-
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-            Bullet newBullet = new Bullet(new Sprite(bulletTexture), player.direction, (TiledMapTileLayer) map.getLayers().get(0));
-
-            newBullet.spawn(player.getX(), player.getY(), player.direction);
-
-            bullets.add(newBullet);
-        }
-
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
-            Enemy newEnemy = new Enemy(
-                new Sprite(normalEnemyTexture),
-                (TiledMapTileLayer) map.getLayers().get(0),
-                new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
-
-            newEnemy.setPosition(0f, 5f);
-
-            enemies.add(newEnemy);
-        }
     }
 
     @Override
@@ -178,6 +168,105 @@ public class PlayScreen implements Screen {
 
         healthBar = new HealthBar(new Sprite(barBGTexture), new Sprite(barHealthTexture));
         healthBar.create(player.health, true);
+
+
+        stage = new Stage(new ExtendViewport(1280, 900), game.spriteBatch);
+        Gdx.input.setInputProcessor(stage);
+
+        Texture upgradeBGTexture = new Texture(Gdx.files.internal("upgradeUI/upgrade_bg.png"));
+        Texture moreDMGTexture = new Texture(Gdx.files.internal("upgradeUI/more_dmg.png"));
+        Texture doubleShootTexture = new Texture(Gdx.files.internal("upgradeUI/double_shoot.png"));
+        Texture frozenTexture = new Texture(Gdx.files.internal("upgradeUI/frozen.png"));
+        Texture higherJumpTexture = new Texture(Gdx.files.internal("upgradeUI/higher_jump.png"));
+
+        Image upgradeBG = new Image(upgradeBGTexture);
+
+        ImageButton moreDMGButton = new ImageButton(new TextureRegionDrawable(moreDMGTexture));
+        powerClick(moreDMGButton);
+
+        ImageButton doubleShootButton = new ImageButton(new TextureRegionDrawable(doubleShootTexture));
+        powerClick(doubleShootButton);
+
+        ImageButton frozenButton = new ImageButton(new TextureRegionDrawable(frozenTexture));
+        powerClick(frozenButton);
+
+        ImageButton higherJumpButton = new ImageButton(new TextureRegionDrawable(higherJumpTexture));
+        powerClick(higherJumpButton);
+
+        Table tableBG = new Table();
+        Table table = new Table();
+        tableBG.setFillParent(true);
+        table.setFillParent(true);
+        stage.addActor(tableBG);
+        stage.addActor(table);
+
+        tableBG.add(upgradeBG).center().expand().width(570).height(760);
+        table.add(moreDMGButton).center().width(450).height(120);
+        table.row().padTop(50);
+        table.add(doubleShootButton).center().width(450).height(120);
+        table.row().padTop(50);
+        table.add(frozenButton).center().width(450).height(120);
+        table.row().padTop(50);
+        table.add(higherJumpButton).center().width(450).height(120);
+    }
+
+    private void powerClick(ImageButton powerButton) {
+        powerButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gameState = GameState.RUNNING;
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+        });
+    }
+
+    private void input(float delta) {
+        player.velocity.x = 0;
+
+        if (player.knockbackVelocity.len() < 5f) {
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                player.moveRight();
+                player.direction = Direction.RIGHT;
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                player.moveLeft();
+                player.direction = Direction.LEFT;
+            }
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            player.jump();
+        }
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            Bullet newBullet = new Bullet(new Sprite(bulletTexture), player.direction, (TiledMapTileLayer) map.getLayers().get(0));
+
+            newBullet.spawn(player.getX(), player.getY(), player.direction);
+
+            bullets.add(newBullet);
+        }
+
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
+            Enemy newEnemy = new Enemy(
+                new Sprite(normalEnemyTexture),
+                (TiledMapTileLayer) map.getLayers().get(0),
+                new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
+
+            newEnemy.setPosition(0f, 5f);
+
+            enemies.add(newEnemy);
+        }
     }
 
     @Override
@@ -303,6 +392,7 @@ public class PlayScreen implements Screen {
             if (enemy.isDead) {
                 iterator.remove();
                 player.xp += 25;
+                gameState = GameState.UPGRADE_SCREEN;
                 continue;
             }
 
