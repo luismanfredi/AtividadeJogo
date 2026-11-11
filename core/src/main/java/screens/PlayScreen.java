@@ -66,6 +66,7 @@ public class PlayScreen implements Screen {
     private Power faster;
     private Power dmg;
     private ArrayList<Power> powers = new ArrayList<>();
+    private Table table;
 
     private StretchViewport viewport;
     private TiledMap map;
@@ -100,9 +101,12 @@ public class PlayScreen implements Screen {
                 }
 
                 if (player.playerUpgraded) {
-                    gameState = GameState.UPGRADE_SCREEN;
-                    Table table = choosePowers();
-                    stage.addActor(table);
+                    if (player.level <= player.MAX_LEVEL) {
+                        gameState = GameState.UPGRADE_SCREEN;
+                        table.clear();
+                        choosePowers();
+                        stage.addActor(table);
+                    }
                 }
 
                 healthBar.update(delta, camera, player.health);
@@ -217,6 +221,9 @@ public class PlayScreen implements Screen {
         powers.add(faster);
         powers.add(dmg);
 
+        table = new Table();
+        table.setFillParent(true);
+
         Table tableBG = new Table();
         tableBG.setFillParent(true);
         stage.addActor(tableBG);
@@ -224,30 +231,37 @@ public class PlayScreen implements Screen {
         tableBG.add(upgradeBG).center().expand().width(570).height(760);
     }
 
-    private Table choosePowers() {
-        Table table = new Table();
-        table.setFillParent(true);
+    private void choosePowers() {
+        ArrayList<Power> AvailablePowers = new ArrayList<>();
+        for (Power power : powers) {
+            if (!power.active) {
+                AvailablePowers.add(power);
+            }
+        }
 
-        ArrayList<Power> AvailablePowers = new ArrayList<>(this.powers);
+        int powerCounter = Math.min(4, AvailablePowers.size());
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < powerCounter; i++) {
             int randomIndex = random.nextInt(AvailablePowers.size());
 
             Power power = AvailablePowers.remove(randomIndex);
 
-            powerClick(power.button);
+            if (power.active) {
+                continue;
+            }
+
+            powerClick(power);
             table.add(power.button).center().width(450).height(120);
             table.row().padTop(50);
         }
-
-        return table;
     }
 
-    private void powerClick(ImageButton powerButton) {
-        powerButton.addListener(new ClickListener() {
+    private void powerClick(Power power) {
+        power.button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 gameState = GameState.RUNNING;
+                power.active = true;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
 
@@ -300,31 +314,6 @@ public class PlayScreen implements Screen {
 
             enemies.add(newEnemy);
         }
-    }
-
-    @Override
-    public void hide() {
-        dispose();
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void dispose() {
-        map.dispose();
-        renderer.dispose();
-        playerTexture.dispose();
-        bulletTexture.dispose();
-        barBGTexture.dispose();
-        barHealthTexture.dispose();
     }
 
     public void enemySpawner(float delta) {
@@ -438,5 +427,30 @@ public class PlayScreen implements Screen {
                 player.knockbackVelocity.set(direction.x * knockbackStrength, direction.y * knockbackStrength);
             }
         }
+    }
+
+    @Override
+    public void hide() {
+        dispose();
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void dispose() {
+        map.dispose();
+        renderer.dispose();
+        playerTexture.dispose();
+        bulletTexture.dispose();
+        barBGTexture.dispose();
+        barHealthTexture.dispose();
     }
 }
