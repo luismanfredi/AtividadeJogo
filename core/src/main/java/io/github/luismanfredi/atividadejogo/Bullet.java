@@ -5,8 +5,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.ArrayList;
-
 public class Bullet extends Sprite {
 
     public Vector2 velocity = new Vector2(12f, 0f);

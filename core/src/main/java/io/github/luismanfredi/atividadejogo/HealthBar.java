@@ -1,6 +1,5 @@
 package io.github.luismanfredi.atividadejogo;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
