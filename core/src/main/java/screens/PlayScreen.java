@@ -202,12 +202,12 @@ public class PlayScreen implements Screen {
 
         Image upgradeBG = new Image(upgradeBGTexture);
 
-        moreDMG = new Power(moreDMGTexture);
-        doubleShoot = new Power(doubleShootTexture);
-        frozen = new Power(frozenTexture);
-        higherJump = new Power(higherJumpTexture);
-        faster = new Power(fasterTexture);
-        dmg = new Power(dmgTexture);
+        moreDMG = new Power(moreDMGTexture, PowerType.MORE_DMG);
+        doubleShoot = new Power(doubleShootTexture, PowerType.DOUBLE_SHOOT);
+        frozen = new Power(frozenTexture, PowerType.FROZEN);
+        higherJump = new Power(higherJumpTexture, PowerType.JUMP_BOOST);
+        faster = new Power(fasterTexture, PowerType.MORE_SPEED);
+        dmg = new Power(dmgTexture, PowerType.MORE_DMG);
 
         powers.add(moreDMG);
         powers.add(doubleShoot);
@@ -215,6 +215,10 @@ public class PlayScreen implements Screen {
         powers.add(higherJump);
         powers.add(faster);
         powers.add(dmg);
+
+        for (Power power : powers) {
+            powerClick(power);
+        }
 
         table = new Table();
         table.setFillParent(true);
@@ -245,7 +249,6 @@ public class PlayScreen implements Screen {
                 continue;
             }
 
-            powerClick(power);
             table.add(power.button).center().width(450).height(120);
             table.row().padTop(50);
         }
@@ -258,6 +261,7 @@ public class PlayScreen implements Screen {
                 gameState = GameState.RUNNING;
                 power.active = true;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                power.update(player);
             }
 
             @Override
@@ -398,7 +402,7 @@ public class PlayScreen implements Screen {
                 Bullet bullet = bulletIterator2.next();
 
                 if (bullet.box.overlaps(enemy.box)) {
-                    enemy.takeDamage(bullet.damage);
+                    enemy.takeDamage(player.damage);
                     bulletIterator2.remove();
                     break;
                 }

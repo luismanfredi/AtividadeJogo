@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Bullet extends Sprite {
 
-    public Vector2 velocity = new Vector2(12f, 0f);
+    public Vector2 velocity = new Vector2(14f, 0f);
     Direction direction;
     private boolean dead = false;
     public float damage = 10f;

@@ -14,9 +14,10 @@ public class Player extends Sprite {
 
     private final float MAX_HEALTH = 100f;
     public float health;
-    private float speed = 7f;
-    private float gravity = -20f;
-    private float jumpStrength = 8f;
+    public float speed = 6f;
+    public float damage = 10f;
+    public float gravity = -20f;
+    public float jumpStrength = 8f;
     public int xp = 0;
     public int[] xpNeeded = {75, 125, 175, 250, 300, 425};
     public final int MAX_LEVEL = 6;
