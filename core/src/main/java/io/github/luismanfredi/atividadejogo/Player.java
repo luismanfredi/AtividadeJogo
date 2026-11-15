@@ -68,7 +68,6 @@ public class Player extends Sprite {
             }
         }
 
-        translateX(knockbackVelocity.x * delta);
         translateY(knockbackVelocity.y * delta);
 
         if (health <= 0) {
