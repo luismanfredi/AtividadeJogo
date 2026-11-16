@@ -11,13 +11,16 @@ public class Enemy extends Sprite {
 
     public float health;
     public float maxHealth = 30f;
-    public float speed = 3f;
+    public float speed = 4f;
     private float gravity = -20f;
     private float jumpStrength = 8f;
     public float damage = 17f;
     boolean grounded = false;
     public boolean isDead = false;
     public HealthBar healthBar;
+    private float frozen_time = 5f;
+    private boolean isFrozen = false;
+    public float MAX_SPEED = 4f;
 
     private TiledMapTileLayer collisionLayer;
 
@@ -32,6 +35,17 @@ public class Enemy extends Sprite {
     }
 
     public void update(float delta, float x, float y) {
+        if (isFrozen) {
+            if (frozen_time >= 0) {
+                frozen_time -= delta;
+            } else if (frozen_time < 0) {
+                isFrozen = false;
+                frozen_time = 5f;
+                speed = MAX_SPEED;
+            }
+        }
+
+
         healthBar.update(delta, getX(), getY(), health, maxHealth);
 
         if (health <= 0) {
@@ -42,7 +56,7 @@ public class Enemy extends Sprite {
             velocity.y += gravity * delta;
         }
 
-        if (!isCellBlocked(getX() + 0.1f, getY() - 0.01f)  || !isCellBlocked(getX() + getWidth() - 0.01f, getY() - 0.01f)) {
+        if (!isCellBlocked(getX() + 0.1f, getY() - 0.01f) || !isCellBlocked(getX() + getWidth() - 0.01f, getY() - 0.01f)) {
             grounded = false;
         }
 
@@ -62,7 +76,7 @@ public class Enemy extends Sprite {
                 jump();
             }
         } else if (velocity.x < 0) {
-            if (isCellBlocked(getX() , getY()) || isCellBlocked(getX(), getY() + getHeight() - 0.01f)) {
+            if (isCellBlocked(getX(), getY()) || isCellBlocked(getX(), getY() + getHeight() - 0.01f)) {
                 setX(oldX);
                 velocity.x = 0;
                 jump();
@@ -130,5 +144,12 @@ public class Enemy extends Sprite {
 
     public void moveLeft() {
         velocity.x = -speed;
+    }
+
+    public void frozen(float delta) {
+        if (!isFrozen) {
+            isFrozen = true;
+            speed -= 2f;
+        }
     }
 }

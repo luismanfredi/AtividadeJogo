@@ -63,7 +63,7 @@ public class PlayScreen implements Screen {
     private ArrayList<Power> powers = new ArrayList<>();
     private Table table;
 
-    private Bullet modelBullet = new Bullet();
+    private final Bullet BULLET_MODEL = new Bullet();
 
     private StretchViewport viewport;
     private TiledMap map;
@@ -267,7 +267,9 @@ public class PlayScreen implements Screen {
                     power.update(player);
                 } else if (power.powerType == PowerType.BULLET) {
                     if (power.powers == Powers.DOUBLE_SHOOT) {
-                        modelBullet.doubleShoot = true;
+                        BULLET_MODEL.doubleShoot = true;
+                    } else if (power.powers == Powers.FROZEN) {
+                        BULLET_MODEL.frozen = true;
                     }
                 }
             }
@@ -306,7 +308,7 @@ public class PlayScreen implements Screen {
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
            Bullet newBullet = new Bullet(new Sprite(bulletTexture), player.direction, (TiledMapTileLayer) map.getLayers().get(0));
 
-            if (modelBullet.doubleShoot) {
+            if (BULLET_MODEL.doubleShoot) {
                 Bullet newBullet2 = new Bullet(new Sprite(bulletTexture), player.direction, (TiledMapTileLayer) map.getLayers().get(0));
                 newBullet2.spawn(player.getX(), player.getY(), player.direction);
                 newBullet.spawn(player.getX(), player.getY() - 0.2f, player.direction);
@@ -371,7 +373,8 @@ public class PlayScreen implements Screen {
 
             newEnemy.maxHealth = 10f;
             newEnemy.health = newEnemy.maxHealth;
-            newEnemy.speed = 5f;
+            newEnemy.speed = 7f;
+            newEnemy.MAX_SPEED = newEnemy.speed;
             newEnemy.damage = 12.5f;
 
             enemies.add(newEnemy);
@@ -383,7 +386,8 @@ public class PlayScreen implements Screen {
 
             newEnemy.maxHealth = 100f;
             newEnemy.health = newEnemy.maxHealth;
-            newEnemy.speed = 1.5f;
+            newEnemy.speed = 2.5f;
+            newEnemy.MAX_SPEED = newEnemy.speed;
             newEnemy.damage = 25f;
 
             enemies.add(newEnemy);
@@ -419,6 +423,9 @@ public class PlayScreen implements Screen {
 
                 if (bullet.box.overlaps(enemy.box)) {
                     enemy.takeDamage(player.damage);
+                    if (BULLET_MODEL.frozen) {
+                        enemy.frozen(delta);
+                    }
                     bulletIterator2.remove();
                     break;
                 }
