@@ -7,20 +7,20 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 public class Power  {
     public ImageButton button;
     public boolean active = false;
-    public PowerType powerType;
+    public Powers powers;
 
-    public Power(Texture texture, PowerType powerType) {
+    public Power(Texture texture, Powers powers) {
         this.button = new ImageButton(new TextureRegionDrawable(texture));
-        this.powerType = powerType;
+        this.powers = powers;
     }
 
     public void update(Player player) {
-        if (powerType == PowerType.MORE_SPEED) {
+        if (powers == Powers.MORE_SPEED) {
             player.speed = 9f;
-        } else if (powerType == PowerType.JUMP_BOOST) {
+        } else if (powers == Powers.JUMP_BOOST) {
             player.jumpStrength = 14f;
             player.gravity = -26f;
-        } else if (powerType == PowerType.MORE_DMG) {
+        } else if (powers == Powers.MORE_DMG) {
             player.damage = 18f;
         }
     }

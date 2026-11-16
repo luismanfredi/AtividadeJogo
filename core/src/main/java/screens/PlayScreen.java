@@ -202,12 +202,12 @@ public class PlayScreen implements Screen {
 
         Image upgradeBG = new Image(upgradeBGTexture);
 
-        moreDMG = new Power(moreDMGTexture, PowerType.MORE_DMG);
-        doubleShoot = new Power(doubleShootTexture, PowerType.DOUBLE_SHOOT);
-        frozen = new Power(frozenTexture, PowerType.FROZEN);
-        higherJump = new Power(higherJumpTexture, PowerType.JUMP_BOOST);
-        faster = new Power(fasterTexture, PowerType.MORE_SPEED);
-        dmg = new Power(dmgTexture, PowerType.MORE_DMG);
+        moreDMG = new Power(moreDMGTexture, Powers.MORE_DMG);
+        doubleShoot = new Power(doubleShootTexture, Powers.DOUBLE_SHOOT);
+        frozen = new Power(frozenTexture, Powers.FROZEN);
+        higherJump = new Power(higherJumpTexture, Powers.JUMP_BOOST);
+        faster = new Power(fasterTexture, Powers.MORE_SPEED);
+        dmg = new Power(dmgTexture, Powers.MORE_DMG);
 
         powers.add(moreDMG);
         powers.add(doubleShoot);
