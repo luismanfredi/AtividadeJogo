@@ -8,10 +8,12 @@ public class Power  {
     public ImageButton button;
     public boolean active = false;
     public Powers powers;
+    public PowerType powerType;
 
-    public Power(Texture texture, Powers powers) {
+    public Power(Texture texture, Powers powers, PowerType powerType) {
         this.button = new ImageButton(new TextureRegionDrawable(texture));
         this.powers = powers;
+        this.powerType = powerType;
     }
 
     public void update(Player player) {

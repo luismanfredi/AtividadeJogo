@@ -11,16 +11,20 @@ public class Bullet extends Sprite {
     Direction direction;
     private boolean dead = false;
     public float damage = 10f;
+    public boolean doubleShoot = false;
 
     public Rectangle box = new Rectangle();
 
     private TiledMapTileLayer collisionLayer;
 
+    public Bullet() {
+    }
+
     public Bullet(Sprite sprite, Direction direction, TiledMapTileLayer collisionLayer) {
         super(sprite);
         this.direction = direction;
         this.collisionLayer = collisionLayer;
-        setSize(0.3f, 0.2f);
+        setSize(0.3f, 0.12f);
         box.setSize(0.3f, 0.2f);
     }
 

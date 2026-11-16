@@ -63,6 +63,8 @@ public class PlayScreen implements Screen {
     private ArrayList<Power> powers = new ArrayList<>();
     private Table table;
 
+    private Bullet modelBullet = new Bullet();
+
     private StretchViewport viewport;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
@@ -202,12 +204,12 @@ public class PlayScreen implements Screen {
 
         Image upgradeBG = new Image(upgradeBGTexture);
 
-        moreDMG = new Power(moreDMGTexture, Powers.MORE_DMG);
-        doubleShoot = new Power(doubleShootTexture, Powers.DOUBLE_SHOOT);
-        frozen = new Power(frozenTexture, Powers.FROZEN);
-        higherJump = new Power(higherJumpTexture, Powers.JUMP_BOOST);
-        faster = new Power(fasterTexture, Powers.MORE_SPEED);
-        dmg = new Power(dmgTexture, Powers.MORE_DMG);
+        moreDMG = new Power(moreDMGTexture, Powers.MORE_DMG, PowerType.PLAYER);
+        doubleShoot = new Power(doubleShootTexture, Powers.DOUBLE_SHOOT, PowerType.BULLET);
+        frozen = new Power(frozenTexture, Powers.FROZEN, PowerType.BULLET);
+        higherJump = new Power(higherJumpTexture, Powers.JUMP_BOOST, PowerType.PLAYER);
+        faster = new Power(fasterTexture, Powers.MORE_SPEED, PowerType.PLAYER);
+        dmg = new Power(dmgTexture, Powers.MORE_DMG, PowerType.PLAYER);
 
         powers.add(moreDMG);
         powers.add(doubleShoot);
@@ -261,7 +263,13 @@ public class PlayScreen implements Screen {
                 gameState = GameState.RUNNING;
                 power.active = true;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
-                power.update(player);
+                if (power.powerType == PowerType.PLAYER) {
+                    power.update(player);
+                } else if (power.powerType == PowerType.BULLET) {
+                    if (power.powers == Powers.DOUBLE_SHOOT) {
+                        modelBullet.doubleShoot = true;
+                    }
+                }
             }
 
             @Override
@@ -296,11 +304,19 @@ public class PlayScreen implements Screen {
         }
 
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-            Bullet newBullet = new Bullet(new Sprite(bulletTexture), player.direction, (TiledMapTileLayer) map.getLayers().get(0));
+           Bullet newBullet = new Bullet(new Sprite(bulletTexture), player.direction, (TiledMapTileLayer) map.getLayers().get(0));
 
-            newBullet.spawn(player.getX(), player.getY(), player.direction);
-
-            bullets.add(newBullet);
+            if (modelBullet.doubleShoot) {
+                Bullet newBullet2 = new Bullet(new Sprite(bulletTexture), player.direction, (TiledMapTileLayer) map.getLayers().get(0));
+                newBullet2.spawn(player.getX(), player.getY(), player.direction);
+                newBullet.spawn(player.getX(), player.getY() - 0.2f, player.direction);
+                bullets.add(newBullet);
+                bullets.add(newBullet2);
+            }
+            else {
+                newBullet.spawn(player.getX(), player.getY(), player.direction);
+                bullets.add(newBullet);
+            }
         }
 
         if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
