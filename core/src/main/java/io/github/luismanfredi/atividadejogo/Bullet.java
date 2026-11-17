@@ -13,6 +13,7 @@ public class Bullet extends Sprite {
     public float damage = 10f;
     public boolean doubleShoot = false;
     public boolean frozen = false;
+    public boolean fasterBullet = false;
 
     public Rectangle box = new Rectangle();
 

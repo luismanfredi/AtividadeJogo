@@ -46,20 +46,6 @@ public class PlayScreen implements Screen {
     private Texture barBGTexture;
     private Texture barHealthTexture;
 
-    private Texture upgradeBGTexture;
-    private Texture moreDMGTexture;
-    private Texture doubleShootTexture;
-    private Texture frozenTexture;
-    private Texture higherJumpTexture;
-    private Texture fasterTexture;
-    private Texture dmgTexture;
-
-    private Power moreDMG;
-    private Power doubleShoot;
-    private Power frozen;
-    private Power higherJump;
-    private Power faster;
-    private Power dmg;
     private ArrayList<Power> powers = new ArrayList<>();
     private Table table;
 
@@ -194,29 +180,29 @@ public class PlayScreen implements Screen {
         stage = new Stage(new ExtendViewport(1280, 900), game.spriteBatch);
         Gdx.input.setInputProcessor(stage);
 
-        upgradeBGTexture = new Texture(Gdx.files.internal("upgradeUI/upgrade_bg.png"));
-        moreDMGTexture = new Texture(Gdx.files.internal("upgradeUI/more_dmg.png"));
-        doubleShootTexture = new Texture(Gdx.files.internal("upgradeUI/double_shoot.png"));
-        frozenTexture = new Texture(Gdx.files.internal("upgradeUI/frozen.png"));
-        higherJumpTexture = new Texture(Gdx.files.internal("upgradeUI/higher_jump.png"));
-        fasterTexture = new Texture(Gdx.files.internal("upgradeUI/faster.png"));
-        dmgTexture = new Texture(Gdx.files.internal("upgradeUI/dmg.png"));
+        Texture upgradeBGTexture = new Texture(Gdx.files.internal("upgradeUI/upgrade_bg.png"));
+        Texture moreDMGTexture = new Texture(Gdx.files.internal("upgradeUI/more_dmg.png"));
+        Texture doubleShootTexture = new Texture(Gdx.files.internal("upgradeUI/double_shoot.png"));
+        Texture frozenTexture = new Texture(Gdx.files.internal("upgradeUI/frozen.png"));
+        Texture higherJumpTexture = new Texture(Gdx.files.internal("upgradeUI/higher_jump.png"));
+        Texture fasterTexture = new Texture(Gdx.files.internal("upgradeUI/faster.png"));
+        Texture fasterBulletTexture = new Texture(Gdx.files.internal("upgradeUI/faster_bullet.png"));
 
         Image upgradeBG = new Image(upgradeBGTexture);
 
-        moreDMG = new Power(moreDMGTexture, Powers.MORE_DMG, PowerType.PLAYER);
-        doubleShoot = new Power(doubleShootTexture, Powers.DOUBLE_SHOOT, PowerType.BULLET);
-        frozen = new Power(frozenTexture, Powers.FROZEN, PowerType.BULLET);
-        higherJump = new Power(higherJumpTexture, Powers.JUMP_BOOST, PowerType.PLAYER);
-        faster = new Power(fasterTexture, Powers.MORE_SPEED, PowerType.PLAYER);
-        dmg = new Power(dmgTexture, Powers.MORE_DMG, PowerType.PLAYER);
+        Power moreDMG = new Power(moreDMGTexture, Powers.MORE_DMG, PowerType.PLAYER);
+        Power doubleShoot = new Power(doubleShootTexture, Powers.DOUBLE_SHOOT, PowerType.BULLET);
+        Power frozen = new Power(frozenTexture, Powers.FROZEN, PowerType.BULLET);
+        Power higherJump = new Power(higherJumpTexture, Powers.JUMP_BOOST, PowerType.PLAYER);
+        Power faster = new Power(fasterTexture, Powers.MORE_SPEED, PowerType.PLAYER);
+        Power fasterBullet = new Power(fasterBulletTexture, Powers.FASTER_BULLET, PowerType.BULLET);
 
         powers.add(moreDMG);
         powers.add(doubleShoot);
         powers.add(frozen);
         powers.add(higherJump);
         powers.add(faster);
-        powers.add(dmg);
+        powers.add(fasterBullet);
 
         for (Power power : powers) {
             powerClick(power);
@@ -270,6 +256,8 @@ public class PlayScreen implements Screen {
                         BULLET_MODEL.doubleShoot = true;
                     } else if (power.powers == Powers.FROZEN) {
                         BULLET_MODEL.frozen = true;
+                    } else if (power.powers == Powers.FASTER_BULLET) {
+                        BULLET_MODEL.fasterBullet = true;
                     }
                 }
             }
@@ -318,6 +306,12 @@ public class PlayScreen implements Screen {
             else {
                 newBullet.spawn(player.getX(), player.getY(), player.direction);
                 bullets.add(newBullet);
+            }
+
+            if (BULLET_MODEL.doubleShoot) {
+                for (Bullet bullet : bullets) {
+                    bullet.velocity.x = 20f;
+                }
             }
         }
 
