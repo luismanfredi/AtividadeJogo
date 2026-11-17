@@ -347,7 +347,7 @@ public class PlayScreen implements Screen {
             player.jump();
         }
 
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
            Bullet newBullet = new Bullet(new Sprite(bulletTexture), player.direction, (TiledMapTileLayer) map.getLayers().get(0));
 
             if (BULLET_MODEL.doubleShoot) {
@@ -367,17 +367,6 @@ public class PlayScreen implements Screen {
                     bullet.velocity.x = 24f;
                 }
             }
-        }
-
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
-            Enemy newEnemy = new Enemy(
-                new Sprite(normalEnemyTexture),
-                (TiledMapTileLayer) map.getLayers().get(0),
-                new HealthBar(new Sprite(barBGTexture), new Sprite (barHealthTexture)));
-
-            newEnemy.setPosition(0f, 5f);
-
-            enemies.add(newEnemy);
         }
     }
 
