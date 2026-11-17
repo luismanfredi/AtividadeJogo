@@ -187,6 +187,7 @@ public class PlayScreen implements Screen {
         Texture higherJumpTexture = new Texture(Gdx.files.internal("upgradeUI/higher_jump.png"));
         Texture fasterTexture = new Texture(Gdx.files.internal("upgradeUI/faster.png"));
         Texture fasterBulletTexture = new Texture(Gdx.files.internal("upgradeUI/faster_bullet.png"));
+        Texture moreHealthTexture = new Texture(Gdx.files.internal("upgradeUI/more_health.png"));
 
         Image upgradeBG = new Image(upgradeBGTexture);
 
@@ -196,6 +197,7 @@ public class PlayScreen implements Screen {
         Power higherJump = new Power(higherJumpTexture, Powers.JUMP_BOOST, PowerType.PLAYER);
         Power faster = new Power(fasterTexture, Powers.MORE_SPEED, PowerType.PLAYER);
         Power fasterBullet = new Power(fasterBulletTexture, Powers.FASTER_BULLET, PowerType.BULLET);
+        Power moreHealth = new Power(moreHealthTexture, Powers.MORE_HEALTH, PowerType.PLAYER);
 
         powers.add(moreDMG);
         powers.add(doubleShoot);
@@ -203,6 +205,7 @@ public class PlayScreen implements Screen {
         powers.add(higherJump);
         powers.add(faster);
         powers.add(fasterBullet);
+        powers.add(moreHealth);
 
         for (Power power : powers) {
             powerClick(power);
@@ -246,9 +249,9 @@ public class PlayScreen implements Screen {
         power.button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                gameState = GameState.RUNNING;
                 power.active = true;
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+
                 if (power.powerType == PowerType.PLAYER) {
                     power.update(player);
                 } else if (power.powerType == PowerType.BULLET) {
@@ -260,6 +263,7 @@ public class PlayScreen implements Screen {
                         BULLET_MODEL.fasterBullet = true;
                     }
                 }
+                gameState = GameState.RUNNING;
             }
 
             @Override
@@ -308,9 +312,9 @@ public class PlayScreen implements Screen {
                 bullets.add(newBullet);
             }
 
-            if (BULLET_MODEL.doubleShoot) {
+            if (BULLET_MODEL.fasterBullet) {
                 for (Bullet bullet : bullets) {
-                    bullet.velocity.x = 20f;
+                    bullet.velocity.x = 24f;
                 }
             }
         }

@@ -19,7 +19,7 @@ public class Player extends Sprite {
     public float gravity = -20f;
     public float jumpStrength = 8f;
     public int xp = 0;
-    public int[] xpNeeded = {75, 125, 175, 250, 300, 425};
+    public int[] xpNeeded = {75, 125, 175, 250, 300, 425, 500};
     public final int MAX_LEVEL = 6;
     public int level = 0;
     private boolean grounded = false;

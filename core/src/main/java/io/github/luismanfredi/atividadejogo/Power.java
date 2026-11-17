@@ -24,6 +24,8 @@ public class Power  {
             player.gravity = -26f;
         } else if (powers == Powers.MORE_DMG) {
             player.damage = 18f;
+        } else if (powers == Powers.MORE_HEALTH) {
+            player.health = 120;
         }
     }
 }
