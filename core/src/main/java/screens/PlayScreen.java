@@ -18,8 +18,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -32,7 +34,8 @@ import java.util.Random;
 public class PlayScreen implements Screen {
 
     private final Core game;
-    private Stage stage;
+    private Stage upgradeStage;
+    private Stage defeatStage;
     private Player player;
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Bullet> bullets = new ArrayList<>();
@@ -48,6 +51,7 @@ public class PlayScreen implements Screen {
 
     private ArrayList<Power> powers = new ArrayList<>();
     private Table table;
+    private Table defeatTable;
 
     private final Bullet BULLET_MODEL = new Bullet();
 
@@ -73,6 +77,7 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         switch (gameState) {
             case RUNNING:
+                Gdx.input.setInputProcessor(null);
                 input(delta);
                 logic(delta);
                 enemySpawner(delta);
@@ -80,15 +85,16 @@ public class PlayScreen implements Screen {
 
                 player.update(delta);
                 if (player.isDead) {
-                    Gdx.app.exit();
+                    Gdx.input.setInputProcessor(defeatStage);
+                    gameState = GameState.DEFEAT_SCREEN;
                 }
 
                 if (player.playerUpgraded) {
                     if (player.level <= player.MAX_LEVEL) {
+                        Gdx.input.setInputProcessor(upgradeStage);
                         gameState = GameState.UPGRADE_SCREEN;
                         table.clear();
                         choosePowers();
-                        stage.addActor(table);
                     }
                 }
 
@@ -97,8 +103,13 @@ public class PlayScreen implements Screen {
                 break;
             case UPGRADE_SCREEN:
                 drawGame();
-                stage.act(delta);
-                stage.draw();
+                upgradeStage.act(delta);
+                upgradeStage.draw();
+                break;
+            case DEFEAT_SCREEN:
+                drawGame();
+                defeatStage.act(delta);
+                defeatStage.draw();
                 break;
         }
     }
@@ -176,11 +187,10 @@ public class PlayScreen implements Screen {
         healthBar = new HealthBar(new Sprite(barBGTexture), new Sprite(barHealthTexture));
         healthBar.create(player.health, true);
 
+        upgradeStage = new Stage(new ExtendViewport(1280, 900), game.spriteBatch);
 
-        stage = new Stage(new ExtendViewport(1280, 900), game.spriteBatch);
-        Gdx.input.setInputProcessor(stage);
-
-        Texture upgradeBGTexture = new Texture(Gdx.files.internal("upgradeUI/upgrade_bg.png"));
+        Texture BGTexture = new Texture(Gdx.files.internal("upgradeUI/upgrade_bg.png"));
+        Texture defeatBGTexture = new Texture(Gdx.files.internal("ui/defeat_bg.png"));
         Texture moreDMGTexture = new Texture(Gdx.files.internal("upgradeUI/more_dmg.png"));
         Texture doubleShootTexture = new Texture(Gdx.files.internal("upgradeUI/double_shoot.png"));
         Texture frozenTexture = new Texture(Gdx.files.internal("upgradeUI/frozen.png"));
@@ -189,7 +199,8 @@ public class PlayScreen implements Screen {
         Texture fasterBulletTexture = new Texture(Gdx.files.internal("upgradeUI/faster_bullet.png"));
         Texture moreHealthTexture = new Texture(Gdx.files.internal("upgradeUI/more_health.png"));
 
-        Image upgradeBG = new Image(upgradeBGTexture);
+        Image upgradeBG = new Image(BGTexture);
+        Image defeatBG = new Image(defeatBGTexture);
 
         Power moreDMG = new Power(moreDMGTexture, Powers.MORE_DMG, PowerType.PLAYER);
         Power doubleShoot = new Power(doubleShootTexture, Powers.DOUBLE_SHOOT, PowerType.BULLET);
@@ -211,14 +222,52 @@ public class PlayScreen implements Screen {
             powerClick(power);
         }
 
-        table = new Table();
-        table.setFillParent(true);
-
         Table tableBG = new Table();
         tableBG.setFillParent(true);
-        stage.addActor(tableBG);
-
         tableBG.add(upgradeBG).center().expand().width(570).height(760);
+        upgradeStage.addActor(tableBG);
+
+        table = new Table();
+        table.setFillParent(true);
+        upgradeStage.addActor(table);
+
+        Texture youDiedTexture = new Texture(Gdx.files.internal("ui/died.png"));
+        Texture quitTexture = new Texture(Gdx.files.internal("ui/button_exit.png"));
+
+        ImageButton quitButton = new ImageButton(new TextureRegionDrawable(quitTexture));
+        quitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+        });
+
+        Image youDied = new Image(youDiedTexture);
+
+        defeatStage = new Stage(new ExtendViewport(1280, 720), game.spriteBatch);
+
+        Table defeatBGTable = new Table();
+        defeatBGTable.setFillParent(true);
+        defeatBGTable.add(defeatBG).center().expand().width(570).height(460);
+        defeatStage.addActor(defeatBGTable);
+
+        defeatTable = new Table();
+        defeatTable.setFillParent(true);
+        defeatTable.add(youDied).center().width(310).height(150);
+        defeatTable.row().padTop(40);
+        defeatTable.add(quitButton).center().width(380).height(120);
+
+        defeatStage.addActor(defeatTable);
     }
 
     private void choosePowers() {

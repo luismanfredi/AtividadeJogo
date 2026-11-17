@@ -23,7 +23,7 @@ public class Player extends Sprite {
     public final int MAX_LEVEL = 6;
     public int level = 0;
     private boolean grounded = false;
-    public boolean isDead = false;
+    public boolean isDead = true;
     public boolean playerUpgraded = false;
 
     public Vector2 knockbackVelocity = new Vector2(0f, 0f);
