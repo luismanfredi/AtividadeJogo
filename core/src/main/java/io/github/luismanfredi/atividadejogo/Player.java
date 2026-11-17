@@ -153,8 +153,6 @@ public class Player extends Sprite {
 
             isInvulnerable = true;
             invulnerabilityTimer = INVULNERABILITY_DURATION;
-
-
         }
     }
 

@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import io.github.luismanfredi.atividadejogo.*;
 
+import java.lang.ArrayIndexOutOfBoundsException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -441,7 +442,12 @@ public class PlayScreen implements Screen {
         }
 
         int[] position = ENEMY_POSITIONS_SPAWN[random.nextInt(0,6)];
-        newEnemy.setPosition(position[0], position[1]);
+
+        try {
+            newEnemy.setPosition(position[0], position[1]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Gdx.app.exit();
+        }
     }
 
     public void bulletSpawner(float delta) {
