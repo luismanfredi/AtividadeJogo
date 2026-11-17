@@ -10,7 +10,6 @@ public class Bullet extends Sprite {
     public Vector2 velocity = new Vector2(14f, 0f);
     Direction direction;
     private boolean dead = false;
-    public float damage = 10f;
     public boolean doubleShoot = false;
     public boolean frozen = false;
     public boolean fasterBullet = false;
