@@ -49,6 +49,15 @@ public class PlayScreen implements Screen {
     private Texture bulletTexture;
     private Texture barBGTexture;
     private Texture barHealthTexture;
+    private Texture BGTexture;
+    private Texture defeatBGTexture;
+    private Texture moreDMGTexture;
+    private Texture doubleShootTexture;
+    private Texture frozenTexture;
+    private Texture higherJumpTexture;
+    private Texture fasterTexture;
+    private Texture fasterBulletTexture;
+    private Texture moreHealthTexture;
 
     private ArrayList<Power> powers = new ArrayList<>();
     private Table table;
@@ -190,15 +199,15 @@ public class PlayScreen implements Screen {
 
         upgradeStage = new Stage(new ExtendViewport(1280, 900), game.spriteBatch);
 
-        Texture BGTexture = new Texture(Gdx.files.internal("upgradeUI/upgrade_bg.png"));
-        Texture defeatBGTexture = new Texture(Gdx.files.internal("ui/defeat_bg.png"));
-        Texture moreDMGTexture = new Texture(Gdx.files.internal("upgradeUI/more_dmg.png"));
-        Texture doubleShootTexture = new Texture(Gdx.files.internal("upgradeUI/double_shoot.png"));
-        Texture frozenTexture = new Texture(Gdx.files.internal("upgradeUI/frozen.png"));
-        Texture higherJumpTexture = new Texture(Gdx.files.internal("upgradeUI/higher_jump.png"));
-        Texture fasterTexture = new Texture(Gdx.files.internal("upgradeUI/faster.png"));
-        Texture fasterBulletTexture = new Texture(Gdx.files.internal("upgradeUI/faster_bullet.png"));
-        Texture moreHealthTexture = new Texture(Gdx.files.internal("upgradeUI/more_health.png"));
+        BGTexture = new Texture(Gdx.files.internal("upgradeUI/upgrade_bg.png"));
+        defeatBGTexture = new Texture(Gdx.files.internal("ui/defeat_bg.png"));
+        moreDMGTexture = new Texture(Gdx.files.internal("upgradeUI/more_dmg.png"));
+        doubleShootTexture = new Texture(Gdx.files.internal("upgradeUI/double_shoot.png"));
+        frozenTexture = new Texture(Gdx.files.internal("upgradeUI/frozen.png"));
+        higherJumpTexture = new Texture(Gdx.files.internal("upgradeUI/higher_jump.png"));
+        fasterTexture = new Texture(Gdx.files.internal("upgradeUI/faster.png"));
+        fasterBulletTexture = new Texture(Gdx.files.internal("upgradeUI/faster_bullet.png"));
+        moreHealthTexture = new Texture(Gdx.files.internal("upgradeUI/more_health.png"));
 
         Image upgradeBG = new Image(BGTexture);
         Image defeatBG = new Image(defeatBGTexture);
@@ -516,5 +525,19 @@ public class PlayScreen implements Screen {
         bulletTexture.dispose();
         barBGTexture.dispose();
         barHealthTexture.dispose();
+        normalEnemyTexture.dispose();
+        tankEnemyTexture.dispose();
+        fastEnemyTexture.dispose();
+        BGTexture.dispose();
+        defeatBGTexture.dispose();
+        moreDMGTexture.dispose();
+        doubleShootTexture.dispose();
+        frozenTexture.dispose();
+        higherJumpTexture.dispose();
+        fasterTexture.dispose();
+        fasterBulletTexture.dispose();
+        moreHealthTexture.dispose();
+        defeatStage.dispose();
+        upgradeStage.dispose();
     }
 }
