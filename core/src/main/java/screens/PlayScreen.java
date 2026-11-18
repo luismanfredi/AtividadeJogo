@@ -386,13 +386,13 @@ public class PlayScreen implements Screen {
             chooseEnemy();
 
             if (timeCounter < 10f) {
-                timeToSpawn = 5.0f;
+                timeToSpawn = 3.0f;
             } else if (timeCounter < 30f) {
-                timeToSpawn = 2.5f;
-            } else if (timeCounter < 60f) {
                 timeToSpawn = 2.0f;
-            } else if (timeCounter > 60f) {
+            } else if (timeCounter < 60f) {
                 timeToSpawn = 1.0f;
+            } else if (timeCounter > 60f) {
+                timeToSpawn = 0.5f;
             }
 
         } else {
