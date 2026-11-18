@@ -18,7 +18,7 @@ public class Enemy extends Sprite {
     boolean grounded = false;
     public boolean isDead = false;
     public HealthBar healthBar;
-    private float frozen_time = 5f;
+    private float frozen_time = 1f;
     private boolean isFrozen = false;
     public float MAX_SPEED = 4f;
 
